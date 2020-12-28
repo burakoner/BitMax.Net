@@ -196,7 +196,8 @@ api.SetApiCredentials("XXXXXXXX-API-KEY-XXXXXXXX", "XXXXXXXX-API-SECRET-XXXXXXXX
 
 ## Websocket Api Examples
 The BitMax.Net socket client provides several socket endpoint to which can be subscribed.
-Note: There is problem with BaseAddress caused by CryptoExchange.Net Library. CryptoExchange.Net Library adds a trailing slash to BaseAddress and this cause connection problems for WS-API. I've contected with JKorf and trying to solve it. You can use these methods after library update.
+
+**Note:** There is problem with BaseAddress caused by CryptoExchange.Net Library. CryptoExchange.Net Library adds a trailing slash to BaseAddress and this causes connection problems for WS-API. I've contacted with [JKorf](https://github.com/JKorf) and trying to solve it. You can use these methods after library update.
 
 **Cash (Spot) / Margin » Public Feeds**
 ```C#
