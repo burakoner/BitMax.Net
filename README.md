@@ -231,6 +231,7 @@ api.SetApiCredentials("XXXXXXXX-API-KEY-XXXXXXXX", "XXXXXXXX-API-SECRET-XXXXXXXX
 
 var futures_info = api.GetAccountInfo();
 api.SetAccountGroup(futures_info.Data.AccountGroup);
+
 var futures_balances = api.GetFuturesBalances();
 var futures_positions = api.GetFuturesPositions();
 var futures_risk = api.GetFuturesRisk();
