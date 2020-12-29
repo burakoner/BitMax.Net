@@ -143,12 +143,12 @@ BitMaxClient api = new BitMaxClient();
 api.SetApiCredentials("XXXXXXXX-API-KEY-XXXXXXXX", "XXXXXXXX-API-SECRET-XXXXXXXX");
 
 var account_info = api.GetAccountInfo();
-api.SetAccountGroup(1);
+api.SetAccountGroup(account_info.Data.AccountGroup);
 
-var spot_balances_01 = api.GetCashBalances();
-var spot_balances_02 = api.GetCashBalances(showAll: true);
-var spot_balances_03 = api.GetCashBalances("BTC");
-var spot_balances_04 = api.GetCashBalances("BTC", true);
+var spot_balances_01 = api.GetSpotBalances();
+var spot_balances_02 = api.GetSpotBalances(showAll: true);
+var spot_balances_03 = api.GetSpotBalances("BTC");
+var spot_balances_04 = api.GetSpotBalances("BTC", true);
 var margin_balances_01 = api.GetMarginBalances(showAll: false);
 var margin_balances_02 = api.GetMarginBalances(showAll: true);
 var margin_balances_03 = api.GetMarginBalances("BTC");
@@ -177,13 +177,51 @@ var spot_open_orders_01 = api.GetSpotOpenOrders();
 var spot_open_orders_02 = api.GetSpotOpenOrders("ETH/USDT");
 var spot_current_history_orders = api.GetSpotCurrentHistoryOrders();
 var spot_history_orders = api.GetSpotHistoryOrders();
+
+var spot_orders = new List<BitMaxCashPlaceOrder>();
+spot_orders.Add(new BitMaxCashPlaceOrder
+{
+    Symbol = "BTC/USDT",
+    Size = 0.1m,
+    OrderType = BitMaxCashOrderType.Market,
+    OrderSide = BitMaxOrderSide.Buy,
+});
+spot_orders.Add(new BitMaxCashPlaceOrder
+{
+    Symbol = "BTC/USDT",
+    Size = 0.1m,
+    OrderType = BitMaxCashOrderType.Limit,
+    OrderSide = BitMaxOrderSide.Buy,
+    OrderPrice = 23000.00m,
+    PostOnly = false,
+    TimeInForce = BitMaxCashOrderTimeInForce.GoodTillCanceled,
+});
+var spot_batch_orders = api.PlaceSpotBatchOrders(spot_orders);
+
+var spot_orders_to_cancel = new List<BitMaxCashCancelOrder>();
+spot_orders_to_cancel.Add(new BitMaxCashCancelOrder
+{
+    Symbol = "BTC/USDT",
+    OrderId = "a176a4316ec6U3352487793bethuCafd",
+});
+spot_orders_to_cancel.Add(new BitMaxCashCancelOrder
+{
+    Symbol = "BTC/USDT",
+    OrderId = "a176a4316ec6U3352487793bethuCafe",
+});
+var spot_cancel_batch_orders = api.CancelSpotBatchOrders(spot_orders_to_cancel);
 ```
 
 **Futures » Public Endpoints**
 ```C#
 BitMaxClient api = new BitMaxClient();
 
-var f_assets = api.GetFuturesAssets();
+var futures_assets = api.GetFuturesAssets();
+var futures_contracts = api.GetFuturesContracts();
+var futures_refprices = api.GetFuturesReferencePrices();
+var futures_marketdata_01 = api.GetFuturesMarketData();
+var futures_marketdata_02 = api.GetFuturesMarketData("BTC-PERP");
+var futures_fundingrates = api.GetFuturesFundingRates();
 ```
 
 **Futures » Private Endpoints**
@@ -191,13 +229,30 @@ var f_assets = api.GetFuturesAssets();
 BitMaxClient api = new BitMaxClient();
 api.SetApiCredentials("XXXXXXXX-API-KEY-XXXXXXXX", "XXXXXXXX-API-SECRET-XXXXXXXX");
 
-
+var futures_info = api.GetAccountInfo();
+api.SetAccountGroup(futures_info.Data.AccountGroup);
+var futures_balances = api.GetFuturesBalances();
+var futures_positions = api.GetFuturesPositions();
+var futures_risk = api.GetFuturesRisk();
+var futures_payments = api.GetFuturesFundingPayments();
+var futures_transfer_01 = api.TransferFromCashToFutures("BTC", 0.1m);
+var futures_transfer_02 = api.TransferFromFuturesToCash("BTC", 0.1m);
+var futures_order_01 = api.PlaceFuturesOrder("BTC-PERP", 0.1m, BitMaxFuturesOrderType.Limit, BitMaxOrderSide.Buy, orderPrice: 23000.00m);
+var futures_order_02 = api.PlaceFuturesOrder("BTC-PERP", 0.1m, BitMaxFuturesOrderType.Market, BitMaxOrderSide.Buy);
+var futures_order_03 = api.PlaceFuturesOrder("BTC-PERP", 0.1m, BitMaxFuturesOrderType.Limit, BitMaxOrderSide.Buy, 23000.00m);
+var futures_cancel_order = api.CancelFuturesOrder("BTC-PERP", "a176a4316ec6U3352487793bethuCafd");
+var futures_cancel_all_orders_01 = api.CancelAllFuturesOrders();
+var futures_cancel_all_orders_02 = api.CancelAllFuturesOrders("BTC-PERP");
+var futures_place_batch_orders = api.PlaceFuturesBatchOrders(new List<BitMaxFuturesPlaceOrder> { });
+var futures_cancel_batch_orders = api.CancelFuturesBatchOrders(new List<BitMaxFuturesCancelOrder> { });
+var futures_query = api.GetFuturesOrder("a176a4316ec6U3352487793bethuCafd");
+var futures_open_orders_01 = api.GetFuturesOpenOrders();
+var futures_open_orders_02 = api.GetSpotOpenOrders("BTC-PERP");
+var futures_current_history_orders = api.GetFuturesCurrentHistoryOrders();
 ```
 
 ## Websocket Api Examples
 The BitMax.Net socket client provides several socket endpoint to which can be subscribed.
-
-**Note:** There is problem with BaseAddress caused by CryptoExchange.Net Library. CryptoExchange.Net Library adds a trailing slash to BaseAddress and this causes connection problems for WS-API. I've contacted with [JKorf](https://github.com/JKorf) and trying to solve it. You can use these methods after library update.
 
 **Cash (Spot) / Margin » Public Feeds**
 ```C#
@@ -262,6 +317,41 @@ var sub05 = ws.SubscribeToSpotBalanceAndOrders((data) =>
 _ = ws.Unsubscribe(sub05.Data);
 ```
 
+**Futures » Public Feeds**
+```C#
+var ws = new BitMaxSocketClient();
+
+var sub01 = ws.SubscribeToFuturesMarketData("BTC-PERP", (data) =>
+{
+    if (data != null)
+    {
+        Console.WriteLine($"Market Data >> {data.Symbol} OI:{data.OpenInterest} FR:{data.FundingRate} FPF:{data.FundingPaymentFlag} IP:{data.IndexPrice} MP:{data.MarkPrice}");
+    }
+});
+```
+
+**Futures » Private Feeds**
+```C#
+var credentials = new CryptoExchange.Net.Authentication.ApiCredentials("XXXXXXXX-API-KEY-XXXXXXXX", "XXXXXXXX-API-SECRET-XXXXXXXX");
+var ws = new BitMaxSocketClient(new BitMaxSocketClientOptions { ApiCredentials = credentials });
+
+var auth = ws.Login();
+
+// Needs Authentication
+ws.SubscribeToFuturesOrders((data) =>
+{
+    if (data != null)
+    {
+        Console.WriteLine($"Order Data >> {data.Symbol} OI:{data.OrderId} OT:{data.OrderType} P:{data.Price} AP:{data.AveragePrice}");
+    }
+});
+```
+
 ## Release Notes
+* Version 1.1.0 - 29 Dec 2020
+    * Added Batch Order support
+    * Added Futures Rest Api support
+    * Added Futures WS Api support
+
 * Version 1.0.0 - 28 Dec 2020
     * First Release

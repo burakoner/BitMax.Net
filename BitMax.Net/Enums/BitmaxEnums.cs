@@ -60,7 +60,7 @@
         Failed
     }
 
-    public enum BitMaxCashOrderSide
+    public enum BitMaxOrderSide
     {
         Buy,
         Sell,
@@ -73,6 +73,12 @@
         StopLimit,
         StopMarket,
     }
+    
+    public enum BitMaxFuturesOrderType
+    {
+        Limit,
+        Market,
+    }
 
     public enum BitMaxCashOrderTimeInForce
     {
@@ -80,20 +86,38 @@
         ImmediateOrCancel,
     }
 
-    public enum BitMaxCashOrderResponseInstruction
+    public enum BitMaxFuturesOrderTimeInForce
+    {
+        GoodTillCanceled,
+        ImmediateOrCancel,
+    }
+
+    public enum BitMaxOrderResponseInstruction
     {
         ACK,
         ACCEPT,
         DONE,
+        ERROR,
     }
 
-    public enum BitMaxCashAccountType
+    public enum BitMaxAccountType
     {
         Spot,
         Margin,
+        Futures,
     }
 
     public enum BitMaxCashOrderStatus
+    {
+        New,
+        PendingNew,
+        Filled, 
+        PartiallyFilled, 
+        Cancelled, 
+        Reject,
+    }
+
+    public enum BitMaxFuturesOrderStatus
     {
         New,
         PendingNew,

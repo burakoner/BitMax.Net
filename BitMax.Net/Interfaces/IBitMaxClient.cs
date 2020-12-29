@@ -25,18 +25,14 @@ namespace BitMax.Net.Interfaces
         Task<WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>> CancelSpotOrderAsync(string symbol, string orderId, string clientOrderId = null, CancellationToken ct = default);
         WebCallResult<BitMaxAccountInfo> GetAccountInfo(bool setAccountGroup = false, CancellationToken ct = default);
         Task<WebCallResult<BitMaxAccountInfo>> GetAccountInfoAsync(bool setAccountGroup = false, CancellationToken ct = default);
-        WebCallResult<IEnumerable<BitMaxAsset>> GetAssets(CancellationToken ct = default);
-        Task<WebCallResult<IEnumerable<BitMaxAsset>>> GetAssetsAsync(CancellationToken ct = default);
+        WebCallResult<IEnumerable<BitMaxCashAsset>> GetAssets(CancellationToken ct = default);
+        Task<WebCallResult<IEnumerable<BitMaxCashAsset>>> GetAssetsAsync(CancellationToken ct = default);
         WebCallResult<IEnumerable<BitMaxBarPeriod>> GetBarPeriods(CancellationToken ct = default);
         Task<WebCallResult<IEnumerable<BitMaxBarPeriod>>> GetBarPeriodsAsync(CancellationToken ct = default);
         WebCallResult<IEnumerable<BitMaxCandleSerie>> GetCandles(string symbol, BitMaxPeriod period, int limit = 10, DateTime? from = null, DateTime? to = null, CancellationToken ct = default);
         Task<WebCallResult<IEnumerable<BitMaxCandleSerie>>> GetCandlesAsync(string symbol, BitMaxPeriod period, int limit = 10, DateTime? from = null, DateTime? to = null, CancellationToken ct = default);
-        WebCallResult<IEnumerable<BitMaxCashBalance>> GetCashBalances(string asset = null, bool showAll = false, CancellationToken ct = default);
-        Task<WebCallResult<IEnumerable<BitMaxCashBalance>>> GetCashBalancesAsync(string asset = null, bool showAll = false, CancellationToken ct = default);
         WebCallResult<BitMaxDepositAddress> GetDepositAddresses(string asset, string blockchain = null, CancellationToken ct = default);
         Task<WebCallResult<BitMaxDepositAddress>> GetDepositAddressesAsync(string asset, string blockchain = null, CancellationToken ct = default);
-        WebCallResult<IEnumerable<BitMaxAsset>> GetFuturesAssets(CancellationToken ct = default);
-        Task<WebCallResult<IEnumerable<BitMaxAsset>>> GetFuturesAssetsAsync(CancellationToken ct = default);
         WebCallResult<IEnumerable<BitMaxMarginBalance>> GetMarginBalances(string asset = null, bool showAll = false, CancellationToken ct = default);
         Task<WebCallResult<IEnumerable<BitMaxMarginBalance>>> GetMarginBalancesAsync(string asset = null, bool showAll = false, CancellationToken ct = default);
         WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>> GetMarginCurrentHistoryOrders(string symbol = null, bool executedOnly = false, int limit = 100, CancellationToken ct = default);
@@ -69,13 +65,13 @@ namespace BitMax.Net.Interfaces
         Task<WebCallResult<IEnumerable<BitMaxTicker>>> GetTickersAsync(IEnumerable<string> symbols, CancellationToken ct = default);
         Task<WebCallResult<IEnumerable<BitMaxTicker>>> GetTickersAsync(params string[] symbols);
         Task<WebCallResult<IEnumerable<BitMaxTicker>>> GetTickersAsync(string symbol, CancellationToken ct = default);
-        WebCallResult<BitMaxSerie<IEnumerable<BitMaxTrade>>> GetTrades(string symbol, int limit = 100, CancellationToken ct = default);
-        Task<WebCallResult<BitMaxSerie<IEnumerable<BitMaxTrade>>>> GetTradesAsync(string symbol, int limit = 100, CancellationToken ct = default);
+        WebCallResult<BitMaxSerie<IEnumerable<BitMaxCashTrade>>> GetTrades(string symbol, int limit = 100, CancellationToken ct = default);
+        Task<WebCallResult<BitMaxSerie<IEnumerable<BitMaxCashTrade>>>> GetTradesAsync(string symbol, int limit = 100, CancellationToken ct = default);
         WebCallResult<BitMaxPagedData<BitMaxTransaction>> GetWalletTransactions(string asset = null, BitMaxTransactionType? txType = null, int page = 1, int pageSize = 10, CancellationToken ct = default);
         Task<WebCallResult<BitMaxPagedData<BitMaxTransaction>>> GetWalletTransactionsAsync(string asset = null, BitMaxTransactionType? txType = null, int page = 1, int pageSize = 10, CancellationToken ct = default);
-        WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAccept>> PlaceMarginOrder(string symbol, decimal size, BitMaxCashOrderType type, BitMaxCashOrderSide side, decimal? orderPrice = null, decimal? stopPrice = null, string clientOrderId = null, bool postOnly = false, BitMaxCashOrderTimeInForce timeInForce = BitMaxCashOrderTimeInForce.GoodTillCanceled, CancellationToken ct = default);
-        Task<WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAccept>>> PlaceMarginOrderAsync(string symbol, decimal size, BitMaxCashOrderType type, BitMaxCashOrderSide side, decimal? orderPrice = null, decimal? stopPrice = null, string clientOrderId = null, bool postOnly = false, BitMaxCashOrderTimeInForce timeInForce = BitMaxCashOrderTimeInForce.GoodTillCanceled, CancellationToken ct = default);
-        WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAccept>> PlaceSpotOrder(string symbol, decimal size, BitMaxCashOrderType type, BitMaxCashOrderSide side, decimal? orderPrice = null, decimal? stopPrice = null, string clientOrderId = null, bool postOnly = false, BitMaxCashOrderTimeInForce timeInForce = BitMaxCashOrderTimeInForce.GoodTillCanceled, CancellationToken ct = default);
-        Task<WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAccept>>> PlaceSpotOrderAsync(string symbol, decimal size, BitMaxCashOrderType type, BitMaxCashOrderSide side, decimal? orderPrice = null, decimal? stopPrice = null, string clientOrderId = null, bool postOnly = false, BitMaxCashOrderTimeInForce timeInForce = BitMaxCashOrderTimeInForce.GoodTillCanceled, CancellationToken ct = default);
+        WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAccept>> PlaceMarginOrder(string symbol, decimal size, BitMaxCashOrderType type, BitMaxOrderSide side, decimal? orderPrice = null, decimal? stopPrice = null, string clientOrderId = null, bool postOnly = false, BitMaxCashOrderTimeInForce timeInForce = BitMaxCashOrderTimeInForce.GoodTillCanceled, CancellationToken ct = default);
+        Task<WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAccept>>> PlaceMarginOrderAsync(string symbol, decimal size, BitMaxCashOrderType type, BitMaxOrderSide side, decimal? orderPrice = null, decimal? stopPrice = null, string clientOrderId = null, bool postOnly = false, BitMaxCashOrderTimeInForce timeInForce = BitMaxCashOrderTimeInForce.GoodTillCanceled, CancellationToken ct = default);
+        WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAccept>> PlaceSpotOrder(string symbol, decimal size, BitMaxCashOrderType type, BitMaxOrderSide side, decimal? orderPrice = null, decimal? stopPrice = null, string clientOrderId = null, bool postOnly = false, BitMaxCashOrderTimeInForce timeInForce = BitMaxCashOrderTimeInForce.GoodTillCanceled, CancellationToken ct = default);
+        Task<WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAccept>>> PlaceSpotOrderAsync(string symbol, decimal size, BitMaxCashOrderType type, BitMaxOrderSide side, decimal? orderPrice = null, decimal? stopPrice = null, string clientOrderId = null, bool postOnly = false, BitMaxCashOrderTimeInForce timeInForce = BitMaxCashOrderTimeInForce.GoodTillCanceled, CancellationToken ct = default);
     }
 }

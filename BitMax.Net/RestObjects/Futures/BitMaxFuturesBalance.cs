@@ -3,7 +3,7 @@
 namespace BitMax.Net.RestObjects
 {
 
-    public class BitMaxCashBalance
+    public class BitMaxFuturesBalance
     {
         [JsonProperty("asset")]
         public string Asset { get; set; }
@@ -13,6 +13,12 @@ namespace BitMax.Net.RestObjects
         
         [JsonProperty("availableBalance")]
         public decimal AvailableBalance { get; set; }
+        
+        [JsonProperty("maxTransferrable")]
+        public decimal MaxTransferrable { get; set; }
+        
+        [JsonProperty("priceInUSDT")]
+        public decimal PriceInUSDT { get; set; }
         
     }
 }

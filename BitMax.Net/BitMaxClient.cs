@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
@@ -168,19 +169,19 @@ namespace BitMax.Net
         /// </summary>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitMaxAsset>> GetAssets(CancellationToken ct = default) => GetAssetsAsync(ct).Result;
+        public WebCallResult<IEnumerable<BitMaxCashAsset>> GetAssets(CancellationToken ct = default) => GetAssetsAsync(ct).Result;
         /// <summary>
         /// You can obtain a list of all assets listed on the exchange through this API.
         /// </summary>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<IEnumerable<BitMaxAsset>>> GetAssetsAsync(CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<BitMaxCashAsset>>> GetAssetsAsync(CancellationToken ct = default)
         {
-            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxAsset>>>(GetUrl(Endpoints_Cash_MarketData_Assets), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false).ConfigureAwait(false);
-            if (!result.Success) return WebCallResult<IEnumerable<BitMaxAsset>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
-            if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxAsset>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
+            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxCashAsset>>>(GetUrl(Endpoints_Cash_MarketData_Assets), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false).ConfigureAwait(false);
+            if (!result.Success) return WebCallResult<IEnumerable<BitMaxCashAsset>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
+            if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxCashAsset>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
-            return new WebCallResult<IEnumerable<BitMaxAsset>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Data, null);
+            return new WebCallResult<IEnumerable<BitMaxCashAsset>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Data, null);
         }
 
         /// <summary>
@@ -407,7 +408,7 @@ namespace BitMax.Net
         /// <param name="limit">any positive integer, capped at 100</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public WebCallResult<BitMaxSerie<IEnumerable<BitMaxTrade>>> GetTrades(string symbol, int limit = 100, CancellationToken ct = default) => GetTradesAsync(symbol, limit, ct).Result;
+        public WebCallResult<BitMaxSerie<IEnumerable<BitMaxCashTrade>>> GetTrades(string symbol, int limit = 100, CancellationToken ct = default) => GetTradesAsync(symbol, limit, ct).Result;
         /// <summary>
         /// Gets recent trades
         /// </summary>
@@ -415,7 +416,7 @@ namespace BitMax.Net
         /// <param name="limit">any positive integer, capped at 100</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<BitMaxSerie<IEnumerable<BitMaxTrade>>>> GetTradesAsync(string symbol, int limit = 100, CancellationToken ct = default)
+        public async Task<WebCallResult<BitMaxSerie<IEnumerable<BitMaxCashTrade>>>> GetTradesAsync(string symbol, int limit = 100, CancellationToken ct = default)
         {
             limit.ValidateIntBetween(nameof(limit), 1, 100);
 
@@ -425,11 +426,11 @@ namespace BitMax.Net
                 { "n", limit },
             };
 
-            var result = await SendRequest<BitMaxApiResponse<BitMaxSerie<IEnumerable<BitMaxTrade>>>>(GetUrl(Endpoints_Cash_MarketData_Trades), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false, parameters: parameters).ConfigureAwait(false);
-            if (!result.Success) return WebCallResult<BitMaxSerie<IEnumerable<BitMaxTrade>>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
-            if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxSerie<IEnumerable<BitMaxTrade>>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
+            var result = await SendRequest<BitMaxApiResponse<BitMaxSerie<IEnumerable<BitMaxCashTrade>>>>(GetUrl(Endpoints_Cash_MarketData_Trades), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false, parameters: parameters).ConfigureAwait(false);
+            if (!result.Success) return WebCallResult<BitMaxSerie<IEnumerable<BitMaxCashTrade>>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
+            if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxSerie<IEnumerable<BitMaxCashTrade>>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
-            return new WebCallResult<BitMaxSerie<IEnumerable<BitMaxTrade>>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Data, null);
+            return new WebCallResult<BitMaxSerie<IEnumerable<BitMaxCashTrade>>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Data, null);
         }
 
         /// <summary>
@@ -463,7 +464,7 @@ namespace BitMax.Net
         /// <param name="showAll">by default, the API will only respond with assets with non-zero balances. Set showAll=true to include all assets in the response.</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitMaxCashBalance>> GetCashBalances(string asset = null, bool showAll = false, CancellationToken ct = default) => GetCashBalancesAsync(asset, showAll, ct).Result;
+        public WebCallResult<IEnumerable<BitMaxSpotBalance>> GetSpotBalances(string asset = null, bool showAll = false, CancellationToken ct = default) => GetSpotBalancesAsync(asset, showAll, ct).Result;
         /// <summary>
         /// Gets Spot Balances
         /// </summary>
@@ -471,7 +472,7 @@ namespace BitMax.Net
         /// <param name="showAll">by default, the API will only respond with assets with non-zero balances. Set showAll=true to include all assets in the response.</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<IEnumerable<BitMaxCashBalance>>> GetCashBalancesAsync(string asset = null, bool showAll = false, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<BitMaxSpotBalance>>> GetSpotBalancesAsync(string asset = null, bool showAll = false, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>
             {
@@ -479,11 +480,11 @@ namespace BitMax.Net
             };
             parameters.AddOptionalParameter("asset", asset);
 
-            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxCashBalance>>>(GetUrl(Endpoints_Cash_Balance_CashBalance), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
-            if (!result.Success) return WebCallResult<IEnumerable<BitMaxCashBalance>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
-            if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxCashBalance>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
+            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxSpotBalance>>>(GetUrl(Endpoints_Cash_Balance_CashBalance), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            if (!result.Success) return WebCallResult<IEnumerable<BitMaxSpotBalance>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
+            if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxSpotBalance>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
-            return new WebCallResult<IEnumerable<BitMaxCashBalance>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Data, null);
+            return new WebCallResult<IEnumerable<BitMaxSpotBalance>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Data, null);
         }
 
         /// <summary>
@@ -670,7 +671,7 @@ namespace BitMax.Net
         /// <param name="timeInForce">GTC: good-till-canceled; IOC: immediate-or-cancel. GTC by default.</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAccept>> PlaceSpotOrder(string symbol, decimal size, BitMaxCashOrderType type, BitMaxCashOrderSide side, decimal? orderPrice = null, decimal? stopPrice = null, string clientOrderId = null, bool postOnly = false, BitMaxCashOrderTimeInForce timeInForce = BitMaxCashOrderTimeInForce.GoodTillCanceled, CancellationToken ct = default) => PlaceOrderAsync(BitMaxCashAccountType.Spot, symbol, size, type, side, orderPrice, stopPrice, clientOrderId, postOnly, timeInForce, ct).Result;
+        public WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAccept>> PlaceSpotOrder(string symbol, decimal size, BitMaxCashOrderType type, BitMaxOrderSide side, decimal? orderPrice = null, decimal? stopPrice = null, string clientOrderId = null, bool postOnly = false, BitMaxCashOrderTimeInForce timeInForce = BitMaxCashOrderTimeInForce.GoodTillCanceled, CancellationToken ct = default) => PlaceOrderAsync(BitMaxAccountType.Spot, symbol, size, type, side, orderPrice, stopPrice, clientOrderId, postOnly, timeInForce, ct).Result;
         /// <summary>
         /// Places a Margin Order
         /// Trading and Order related APIs. API path usually depend on account-group and account-category:
@@ -704,7 +705,7 @@ namespace BitMax.Net
         /// <param name="timeInForce">GTC: good-till-canceled; IOC: immediate-or-cancel. GTC by default.</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAccept>> PlaceMarginOrder(string symbol, decimal size, BitMaxCashOrderType type, BitMaxCashOrderSide side, decimal? orderPrice = null, decimal? stopPrice = null, string clientOrderId = null, bool postOnly = false, BitMaxCashOrderTimeInForce timeInForce = BitMaxCashOrderTimeInForce.GoodTillCanceled, CancellationToken ct = default) => PlaceOrderAsync(BitMaxCashAccountType.Margin, symbol, size, type, side, orderPrice, stopPrice, clientOrderId, postOnly, timeInForce, ct).Result;
+        public WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAccept>> PlaceMarginOrder(string symbol, decimal size, BitMaxCashOrderType type, BitMaxOrderSide side, decimal? orderPrice = null, decimal? stopPrice = null, string clientOrderId = null, bool postOnly = false, BitMaxCashOrderTimeInForce timeInForce = BitMaxCashOrderTimeInForce.GoodTillCanceled, CancellationToken ct = default) => PlaceOrderAsync(BitMaxAccountType.Margin, symbol, size, type, side, orderPrice, stopPrice, clientOrderId, postOnly, timeInForce, ct).Result;
         /// <summary>
         /// Places a Spot Order
         /// Trading and Order related APIs. API path usually depend on account-group and account-category:
@@ -738,7 +739,7 @@ namespace BitMax.Net
         /// <param name="timeInForce">GTC: good-till-canceled; IOC: immediate-or-cancel. GTC by default.</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAccept>>> PlaceSpotOrderAsync(string symbol, decimal size, BitMaxCashOrderType type, BitMaxCashOrderSide side, decimal? orderPrice = null, decimal? stopPrice = null, string clientOrderId = null, bool postOnly = false, BitMaxCashOrderTimeInForce timeInForce = BitMaxCashOrderTimeInForce.GoodTillCanceled, CancellationToken ct = default) => await PlaceOrderAsync(BitMaxCashAccountType.Spot, symbol, size, type, side, orderPrice, stopPrice, clientOrderId, postOnly, timeInForce, ct);
+        public async Task<WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAccept>>> PlaceSpotOrderAsync(string symbol, decimal size, BitMaxCashOrderType type, BitMaxOrderSide side, decimal? orderPrice = null, decimal? stopPrice = null, string clientOrderId = null, bool postOnly = false, BitMaxCashOrderTimeInForce timeInForce = BitMaxCashOrderTimeInForce.GoodTillCanceled, CancellationToken ct = default) => await PlaceOrderAsync(BitMaxAccountType.Spot, symbol, size, type, side, orderPrice, stopPrice, clientOrderId, postOnly, timeInForce, ct);
         /// <summary>
         /// Places a Margin Order
         /// Trading and Order related APIs. API path usually depend on account-group and account-category:
@@ -772,16 +773,16 @@ namespace BitMax.Net
         /// <param name="timeInForce">GTC: good-till-canceled; IOC: immediate-or-cancel. GTC by default.</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAccept>>> PlaceMarginOrderAsync(string symbol, decimal size, BitMaxCashOrderType type, BitMaxCashOrderSide side, decimal? orderPrice = null, decimal? stopPrice = null, string clientOrderId = null, bool postOnly = false, BitMaxCashOrderTimeInForce timeInForce = BitMaxCashOrderTimeInForce.GoodTillCanceled, CancellationToken ct = default) => await PlaceOrderAsync(BitMaxCashAccountType.Margin, symbol, size, type, side, orderPrice, stopPrice, clientOrderId, postOnly, timeInForce, ct);
-        private async Task<WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAccept>>> PlaceOrderAsync(BitMaxCashAccountType cashAccountType, string symbol, decimal size, BitMaxCashOrderType type, BitMaxCashOrderSide side, decimal? orderPrice = null, decimal? stopPrice = null, string clientOrderId = null, bool postOnly = false, BitMaxCashOrderTimeInForce timeInForce = BitMaxCashOrderTimeInForce.GoodTillCanceled, CancellationToken ct = default)
+        public async Task<WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAccept>>> PlaceMarginOrderAsync(string symbol, decimal size, BitMaxCashOrderType type, BitMaxOrderSide side, decimal? orderPrice = null, decimal? stopPrice = null, string clientOrderId = null, bool postOnly = false, BitMaxCashOrderTimeInForce timeInForce = BitMaxCashOrderTimeInForce.GoodTillCanceled, CancellationToken ct = default) => await PlaceOrderAsync(BitMaxAccountType.Margin, symbol, size, type, side, orderPrice, stopPrice, clientOrderId, postOnly, timeInForce, ct);
+        private async Task<WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAccept>>> PlaceOrderAsync(BitMaxAccountType cashAccountType, string symbol, decimal size, BitMaxCashOrderType type, BitMaxOrderSide side, decimal? orderPrice = null, decimal? stopPrice = null, string clientOrderId = null, bool postOnly = false, BitMaxCashOrderTimeInForce timeInForce = BitMaxCashOrderTimeInForce.GoodTillCanceled, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object> {
                 { "time", DateTime.UtcNow.ToUnixTimeMilliseconds() },
-                { "symbol", symbol.Replace("-", "/") },
+                { "symbol", symbol },
                 { "orderQty", size.ToString() },
-                { "side", JsonConvert.SerializeObject(side, new CashOrderSideConverter(false)) },
+                { "side", JsonConvert.SerializeObject(side, new OrderSideConverter(false)) },
                 { "orderType", JsonConvert.SerializeObject(type, new CashOrderTypeConverter(false)) },
-                { "respInst", JsonConvert.SerializeObject(BitMaxCashOrderResponseInstruction.ACCEPT, new CashOrderResponseInstructionConverter(false)) },
+                { "respInst", JsonConvert.SerializeObject(BitMaxOrderResponseInstruction.ACCEPT, new OrderResponseInstructionConverter(false)) },
             };
 
             if (clientOrderId != null)
@@ -804,11 +805,11 @@ namespace BitMax.Net
 
             if (type == BitMaxCashOrderType.StopLimit || type == BitMaxCashOrderType.StopMarket)
             {
-                if (stopPrice == null) throw new ArgumentException("orderPrice is required for StopLimit and StopMarket orders");
+                if (stopPrice == null) throw new ArgumentException("stopPrice is required for StopLimit and StopMarket orders");
                 else parameters.Add("stopPrice", stopPrice.ToString());
             }
 
-            var url = Endpoints_Cash_Order_PlaceOrder.Replace("{account-category}", cashAccountType == BitMaxCashAccountType.Spot ? "cash" : "margin");
+            var url = Endpoints_Cash_Order_PlaceOrder.Replace("{account-category}", cashAccountType == BitMaxAccountType.Spot ? "cash" : "margin");
             var result = await SendRequest<BitMaxApiResponse<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAccept>>>(GetUrl(url), method: HttpMethod.Post, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
@@ -817,14 +818,110 @@ namespace BitMax.Net
         }
 
         /// <summary>
-        /// Cancel an existing open order.
+        /// Place multiple orders in a batch. If some order in the batch failed our basic check, then the whole batch request fail.
+        /// You may submit up to 10 orders at a time.Server will respond with error if you submit more than 10 orders.
         /// </summary>
-        /// <param name="symbol">Symbol of the order to cancel</param>
-        /// <param name="orderId">You should set the value to be the orderId of the target order you want to cancel.</param>
-        /// <param name="clientOrderId">We echo it back to help you identify the response if provided. This field is optional</param>
+        /// <param name="orders">Orders List</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>> CancelSpotOrder(string symbol, string orderId, string clientOrderId = null, CancellationToken ct = default) => CancelOrderAsync(BitMaxCashAccountType.Spot, symbol, orderId, clientOrderId, ct).Result;
+        public WebCallResult<BitMaxCashPlacedOrder<IEnumerable<BitMaxCashPlacedOrderInfoAck>>> PlaceSpotBatchOrders(IEnumerable<BitMaxCashPlaceOrder> orders, CancellationToken ct = default) => PlaceBatchOrdersAsync(BitMaxAccountType.Spot, orders, ct).Result;
+        /// <summary>
+        /// Place multiple orders in a batch. If some order in the batch failed our basic check, then the whole batch request fail.
+        /// You may submit up to 10 orders at a time.Server will respond with error if you submit more than 10 orders.
+        /// </summary>
+        /// <param name="orders">Orders List</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public WebCallResult<BitMaxCashPlacedOrder<IEnumerable<BitMaxCashPlacedOrderInfoAck>>> PlaceMarginBatchOrders(IEnumerable<BitMaxCashPlaceOrder> orders, CancellationToken ct = default) => PlaceBatchOrdersAsync(BitMaxAccountType.Margin, orders, ct).Result;
+        /// <summary>
+        /// Place multiple orders in a batch. If some order in the batch failed our basic check, then the whole batch request fail.
+        /// You may submit up to 10 orders at a time.Server will respond with error if you submit more than 10 orders.
+        /// </summary>
+        /// <param name="orders">Orders List</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitMaxCashPlacedOrder<IEnumerable<BitMaxCashPlacedOrderInfoAck>>>> PlaceSpotBatchOrdersAsync(IEnumerable<BitMaxCashPlaceOrder> orders, CancellationToken ct = default) => await PlaceBatchOrdersAsync(BitMaxAccountType.Spot, orders, ct);
+        /// <summary>
+        /// Place multiple orders in a batch. If some order in the batch failed our basic check, then the whole batch request fail.
+        /// You may submit up to 10 orders at a time.Server will respond with error if you submit more than 10 orders.
+        /// </summary>
+        /// <param name="orders">Orders List</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitMaxCashPlacedOrder<IEnumerable<BitMaxCashPlacedOrderInfoAck>>>> PlaceMarginBatchOrdersAsync(IEnumerable<BitMaxCashPlaceOrder> orders, CancellationToken ct = default) => await PlaceBatchOrdersAsync(BitMaxAccountType.Margin, orders, ct);
+        private async Task<WebCallResult<BitMaxCashPlacedOrder<IEnumerable<BitMaxCashPlacedOrderInfoAck>>>> PlaceBatchOrdersAsync(BitMaxAccountType cashAccountType, IEnumerable<BitMaxCashPlaceOrder> orders, CancellationToken ct = default)
+        {
+            if (orders == null || orders.Count() == 0)
+                throw new ArgumentException("Orders must contain one element");
+
+            if (orders.Count() > 10)
+                throw new ArgumentException("Orders can contain up to ten elements");
+
+            var time = DateTime.UtcNow;
+            for (var i = 0; i < orders.Count(); i++)
+            {
+                var order = orders.ElementAt(i);
+                var suffix = $"(Order: {(i + 1)} of {orders.Count()})";
+
+                if (string.IsNullOrEmpty(order.Symbol))
+                    throw new ArgumentException($"Symbol is required for orders {suffix}");
+
+                if (order.ClientOrderId != null)
+                {
+                    if (!Regex.IsMatch(order.ClientOrderId, "^(([a-z]|[A-Z]|[0-9]){9,32})$"))
+                        throw new ArgumentException($"ClientOrderId supports alphabets (case-sensitive) + numbers, or letters (case-sensitive) between 9-32 characters {suffix}");
+                }
+
+                if (order.OrderType == BitMaxCashOrderType.Limit || order.OrderType == BitMaxCashOrderType.StopLimit)
+                {
+                    if (order.OrderPrice == null)
+                        throw new ArgumentException($"OrderPrice is required for Limit and StopLimit orders {suffix}");
+                }
+                else
+                {
+                    order.OrderPrice = null;
+                }
+
+                if (order.OrderType == BitMaxCashOrderType.Limit)
+                {
+                    if (order.PostOnly == null)
+                        throw new ArgumentException($"PostOnly parameter is required for Limit Orders {suffix}");
+                    if (order.TimeInForce == null)
+                        throw new ArgumentException($"TimeInForce parameter is required for Limit Orders {suffix}");
+                }
+                else
+                {
+                    order.PostOnly = null;
+                    order.TimeInForce = null;
+                }
+
+                if (order.OrderType == BitMaxCashOrderType.StopLimit || order.OrderType == BitMaxCashOrderType.StopMarket)
+                {
+                    if (order.StopPrice == null)
+                        throw new ArgumentException($"StopPrice is required for StopLimit and StopMarket orders {suffix}");
+                }
+                else
+                {
+                    order.StopPrice = null;
+                }
+
+                order.Time = time;
+                //order.ResponseInstruction = BitMaxCashOrderResponseInstruction.ACK;
+            }
+
+            var parameters = new Dictionary<string, object> {
+                { "orders", orders },
+                //{ "respInst", JsonConvert.SerializeObject(BitMaxCashOrderResponseInstruction.ACK, new CashOrderResponseInstructionConverter(false)) },
+            };
+
+            var url = Endpoints_Cash_Order_PlaceBatchOrders.Replace("{account-category}", cashAccountType == BitMaxAccountType.Spot ? "cash" : "margin");
+            var result = await SendRequest<BitMaxCashPlacedOrder<IEnumerable<BitMaxCashPlacedOrderInfoAck>>>(GetUrl(url), method: HttpMethod.Post, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            if (!result.Success) return WebCallResult<BitMaxCashPlacedOrder<IEnumerable<BitMaxCashPlacedOrderInfoAck>>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
+            // if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxCashPlacedOrder<IEnumerable<BitMaxCashPlacedOrderInfoAck>>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data.ErrorCode.Value, result.Data.ErrorMessage));
+
+            return new WebCallResult<BitMaxCashPlacedOrder<IEnumerable<BitMaxCashPlacedOrderInfoAck>>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data, null);
+        }
+
         /// <summary>
         /// Cancel an existing open order.
         /// </summary>
@@ -833,7 +930,7 @@ namespace BitMax.Net
         /// <param name="clientOrderId">We echo it back to help you identify the response if provided. This field is optional</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>> CancelMarginOrder(string symbol, string orderId, string clientOrderId = null, CancellationToken ct = default) => CancelOrderAsync(BitMaxCashAccountType.Margin, symbol, orderId, clientOrderId, ct).Result;
+        public WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>> CancelSpotOrder(string symbol, string orderId, string clientOrderId = null, CancellationToken ct = default) => CancelOrderAsync(BitMaxAccountType.Spot, symbol, orderId, clientOrderId, ct).Result;
         /// <summary>
         /// Cancel an existing open order.
         /// </summary>
@@ -842,7 +939,7 @@ namespace BitMax.Net
         /// <param name="clientOrderId">We echo it back to help you identify the response if provided. This field is optional</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>> CancelSpotOrderAsync(string symbol, string orderId, string clientOrderId = null, CancellationToken ct = default) => await CancelOrderAsync(BitMaxCashAccountType.Spot, symbol, orderId, clientOrderId, ct);
+        public WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>> CancelMarginOrder(string symbol, string orderId, string clientOrderId = null, CancellationToken ct = default) => CancelOrderAsync(BitMaxAccountType.Margin, symbol, orderId, clientOrderId, ct).Result;
         /// <summary>
         /// Cancel an existing open order.
         /// </summary>
@@ -851,17 +948,26 @@ namespace BitMax.Net
         /// <param name="clientOrderId">We echo it back to help you identify the response if provided. This field is optional</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>> CancelMarginOrderAsync(string symbol, string orderId, string clientOrderId = null, CancellationToken ct = default) => await CancelOrderAsync(BitMaxCashAccountType.Margin, symbol, orderId, clientOrderId, ct);
-        private async Task<WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>> CancelOrderAsync(BitMaxCashAccountType cashAccountType, string symbol, string orderId, string clientOrderId = null, CancellationToken ct = default)
+        public async Task<WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>> CancelSpotOrderAsync(string symbol, string orderId, string clientOrderId = null, CancellationToken ct = default) => await CancelOrderAsync(BitMaxAccountType.Spot, symbol, orderId, clientOrderId, ct);
+        /// <summary>
+        /// Cancel an existing open order.
+        /// </summary>
+        /// <param name="symbol">Symbol of the order to cancel</param>
+        /// <param name="orderId">You should set the value to be the orderId of the target order you want to cancel.</param>
+        /// <param name="clientOrderId">We echo it back to help you identify the response if provided. This field is optional</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>> CancelMarginOrderAsync(string symbol, string orderId, string clientOrderId = null, CancellationToken ct = default) => await CancelOrderAsync(BitMaxAccountType.Margin, symbol, orderId, clientOrderId, ct);
+        private async Task<WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>> CancelOrderAsync(BitMaxAccountType cashAccountType, string symbol, string orderId, string clientOrderId = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object> {
                 { "time", DateTime.UtcNow.ToUnixTimeMilliseconds() },
-                { "symbol", symbol.Replace("-", "/") },
+                { "symbol", symbol },
                 { "orderId", orderId },
             };
             parameters.AddOptionalParameter("id", clientOrderId);
 
-            var url = Endpoints_Cash_Order_CancelOrder.Replace("{account-category}", cashAccountType == BitMaxCashAccountType.Spot ? "cash" : "margin");
+            var url = Endpoints_Cash_Order_CancelOrder.Replace("{account-category}", cashAccountType == BitMaxAccountType.Spot ? "cash" : "margin");
             var result = await SendRequest<BitMaxApiResponse<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>>(GetUrl(url), method: HttpMethod.Delete, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
@@ -870,40 +976,105 @@ namespace BitMax.Net
         }
 
         /// <summary>
-        /// Cancel all current open orders for the account specified, and optional symbol.
+        /// Cancel multiple orders in a batch. If some order in the batch failed our basic check, then the whole batch request failed.
         /// </summary>
-        /// <param name="symbol">If provided, only cancel all orders on this symbol; otherwise, cancel all open orders under this account.</param>
+        /// <param name="orders">Orders List</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>> CancelAllSpotOrders(string symbol = null, CancellationToken ct = default) => CancelAllOrdersAsync(BitMaxCashAccountType.Spot, symbol, ct).Result;
+        public WebCallResult<BitMaxCashPlacedOrder<IEnumerable<BitMaxCashPlacedOrderInfoAck>>> CancelSpotBatchOrders(IEnumerable<BitMaxCashCancelOrder> orders, CancellationToken ct = default) => CancelBatchOrdersAsync(BitMaxAccountType.Spot, orders, ct).Result;
+        /// <summary>
+        /// Cancel multiple orders in a batch. If some order in the batch failed our basic check, then the whole batch request failed.
+        /// </summary>
+        /// <param name="orders">Orders List</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public WebCallResult<BitMaxCashPlacedOrder<IEnumerable<BitMaxCashPlacedOrderInfoAck>>> CancelMarginBatchOrders(IEnumerable<BitMaxCashCancelOrder> orders, CancellationToken ct = default) => CancelBatchOrdersAsync(BitMaxAccountType.Margin, orders, ct).Result;
+        /// <summary>
+        /// Cancel multiple orders in a batch. If some order in the batch failed our basic check, then the whole batch request failed.
+        /// </summary>
+        /// <param name="orders">Orders List</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitMaxCashPlacedOrder<IEnumerable<BitMaxCashPlacedOrderInfoAck>>>> CancelSpotBatchOrdersAsync(IEnumerable<BitMaxCashCancelOrder> orders, CancellationToken ct = default) => await CancelBatchOrdersAsync(BitMaxAccountType.Spot, orders, ct);
+        /// <summary>
+        /// Cancel multiple orders in a batch. If some order in the batch failed our basic check, then the whole batch request failed.
+        /// </summary>
+        /// <param name="orders">Orders List</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitMaxCashPlacedOrder<IEnumerable<BitMaxCashPlacedOrderInfoAck>>>> CancelMarginBatchOrdersAsync(IEnumerable<BitMaxCashCancelOrder> orders, CancellationToken ct = default) => await CancelBatchOrdersAsync(BitMaxAccountType.Margin, orders, ct);
+        private async Task<WebCallResult<BitMaxCashPlacedOrder<IEnumerable<BitMaxCashPlacedOrderInfoAck>>>> CancelBatchOrdersAsync(BitMaxAccountType cashAccountType, IEnumerable<BitMaxCashCancelOrder> orders, CancellationToken ct = default)
+        {
+            if (orders == null || orders.Count() == 0)
+                throw new ArgumentException("Orders must contain one element");
+
+            if (orders.Count() > 10)
+                throw new ArgumentException("Orders can contain up to ten elements");
+
+            var time = DateTime.UtcNow;
+            for (var i = 0; i < orders.Count(); i++)
+            {
+                var order = orders.ElementAt(i);
+                var suffix = $"(Order: {(i + 1)} of {orders.Count()})";
+                
+                    if (string.IsNullOrEmpty( order.Symbol) )
+                        throw new ArgumentException($"Symbol is required for orders {suffix}");
+
+                    if (string.IsNullOrEmpty( order.OrderId) )
+                        throw new ArgumentException($"OrderId is required for orders {suffix}");
+                
+                order.Time = time;
+                //order.ResponseInstruction = BitMaxCashOrderResponseInstruction.ACK;
+            }
+
+            var parameters = new Dictionary<string, object> {
+                { "orders", orders },
+                //{ "respInst", JsonConvert.SerializeObject(BitMaxCashOrderResponseInstruction.ACK, new CashOrderResponseInstructionConverter(false)) },
+            };
+
+            var url = Endpoints_Cash_Order_CancelBatchOrders.Replace("{account-category}", cashAccountType == BitMaxAccountType.Spot ? "cash" : "margin");
+            var result = await SendRequest< BitMaxApiResponse< BitMaxCashPlacedOrder <IEnumerable<BitMaxCashPlacedOrderInfoAck>>>>(GetUrl(url), method: HttpMethod.Delete, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            if (!result.Success) return WebCallResult<BitMaxCashPlacedOrder<IEnumerable<BitMaxCashPlacedOrderInfoAck>>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
+            // if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxCashPlacedOrder<IEnumerable<BitMaxCashPlacedOrderInfoAck>>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data.ErrorCode.Value, result.Data.ErrorMessage));
+
+            return new WebCallResult<BitMaxCashPlacedOrder<IEnumerable<BitMaxCashPlacedOrderInfoAck>>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Data, null);
+        }
+
         /// <summary>
         /// Cancel all current open orders for the account specified, and optional symbol.
         /// </summary>
         /// <param name="symbol">If provided, only cancel all orders on this symbol; otherwise, cancel all open orders under this account.</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>> CancelAllMarginOrders(string symbol = null, CancellationToken ct = default) => CancelAllOrdersAsync(BitMaxCashAccountType.Margin, symbol, ct).Result;
+        public WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>> CancelAllSpotOrders(string symbol = null, CancellationToken ct = default) => CancelAllOrdersAsync(BitMaxAccountType.Spot, symbol, ct).Result;
         /// <summary>
         /// Cancel all current open orders for the account specified, and optional symbol.
         /// </summary>
         /// <param name="symbol">If provided, only cancel all orders on this symbol; otherwise, cancel all open orders under this account.</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>> CancelAllSpotOrdersAsync(string symbol = null, CancellationToken ct = default) => await CancelAllOrdersAsync(BitMaxCashAccountType.Spot, symbol, ct);
+        public WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>> CancelAllMarginOrders(string symbol = null, CancellationToken ct = default) => CancelAllOrdersAsync(BitMaxAccountType.Margin, symbol, ct).Result;
         /// <summary>
         /// Cancel all current open orders for the account specified, and optional symbol.
         /// </summary>
         /// <param name="symbol">If provided, only cancel all orders on this symbol; otherwise, cancel all open orders under this account.</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>> CancelAllMarginOrdersAsync(string symbol = null, CancellationToken ct = default) => await CancelAllOrdersAsync(BitMaxCashAccountType.Margin, symbol, ct);
-        private async Task<WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>> CancelAllOrdersAsync(BitMaxCashAccountType cashAccountType, string symbol = null, CancellationToken ct = default)
+        public async Task<WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>> CancelAllSpotOrdersAsync(string symbol = null, CancellationToken ct = default) => await CancelAllOrdersAsync(BitMaxAccountType.Spot, symbol, ct);
+        /// <summary>
+        /// Cancel all current open orders for the account specified, and optional symbol.
+        /// </summary>
+        /// <param name="symbol">If provided, only cancel all orders on this symbol; otherwise, cancel all open orders under this account.</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>> CancelAllMarginOrdersAsync(string symbol = null, CancellationToken ct = default) => await CancelAllOrdersAsync(BitMaxAccountType.Margin, symbol, ct);
+        private async Task<WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>> CancelAllOrdersAsync(BitMaxAccountType cashAccountType, string symbol = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>();
             if (!string.IsNullOrEmpty(symbol))
-                parameters.AddOptionalParameter("symbol", symbol.Replace("-", "/"));
+                parameters.AddOptionalParameter("symbol", symbol);
 
-            var url = Endpoints_Cash_Order_CancelAllOrders.Replace("{account-category}", cashAccountType == BitMaxCashAccountType.Spot ? "cash" : "margin");
+            var url = Endpoints_Cash_Order_CancelAllOrders.Replace("{account-category}", cashAccountType == BitMaxAccountType.Spot ? "cash" : "margin");
             var result = await SendRequest<BitMaxApiResponse<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>>(GetUrl(url), method: HttpMethod.Delete, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
@@ -920,7 +1091,7 @@ namespace BitMax.Net
         /// <param name="orderId">one or more order Ids separated by comma</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public WebCallResult<BitMaxCashPlacedOrderInfoAccept> GetSpotOrder(string orderId, CancellationToken ct = default) => GetOrderAsync(BitMaxCashAccountType.Spot, orderId, ct).Result;
+        public WebCallResult<BitMaxCashPlacedOrderInfoAccept> GetSpotOrder(string orderId, CancellationToken ct = default) => GetOrderAsync(BitMaxAccountType.Spot, orderId, ct).Result;
         /// <summary>
         /// Query order status, either open or history order.
         /// orderId could be a single order Id, or multiple order Ids separated by a comma (,):
@@ -930,7 +1101,7 @@ namespace BitMax.Net
         /// <param name="orderId">one or more order Ids separated by comma</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public WebCallResult<BitMaxCashPlacedOrderInfoAccept> GetMarginOrder(string orderId, CancellationToken ct = default) => GetOrderAsync(BitMaxCashAccountType.Margin, orderId, ct).Result;
+        public WebCallResult<BitMaxCashPlacedOrderInfoAccept> GetMarginOrder(string orderId, CancellationToken ct = default) => GetOrderAsync(BitMaxAccountType.Margin, orderId, ct).Result;
         /// <summary>
         /// Query order status, either open or history order.
         /// orderId could be a single order Id, or multiple order Ids separated by a comma (,):
@@ -940,7 +1111,7 @@ namespace BitMax.Net
         /// <param name="orderId">one or more order Ids separated by comma</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<BitMaxCashPlacedOrderInfoAccept>> GetSpotOrderAsync(string orderId, CancellationToken ct = default) => await GetOrderAsync(BitMaxCashAccountType.Spot, orderId, ct);
+        public async Task<WebCallResult<BitMaxCashPlacedOrderInfoAccept>> GetSpotOrderAsync(string orderId, CancellationToken ct = default) => await GetOrderAsync(BitMaxAccountType.Spot, orderId, ct);
         /// <summary>
         /// Query order status, either open or history order.
         /// orderId could be a single order Id, or multiple order Ids separated by a comma (,):
@@ -950,56 +1121,56 @@ namespace BitMax.Net
         /// <param name="orderId">one or more order Ids separated by comma</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<BitMaxCashPlacedOrderInfoAccept>> GetMarginOrderAsync(string orderId, CancellationToken ct = default) => await GetOrderAsync(BitMaxCashAccountType.Margin, orderId, ct);
-        private async Task<WebCallResult<BitMaxCashPlacedOrderInfoAccept>> GetOrderAsync(BitMaxCashAccountType cashAccountType, string orderId, CancellationToken ct = default)
+        public async Task<WebCallResult<BitMaxCashPlacedOrderInfoAccept>> GetMarginOrderAsync(string orderId, CancellationToken ct = default) => await GetOrderAsync(BitMaxAccountType.Margin, orderId, ct);
+        private async Task<WebCallResult<BitMaxCashPlacedOrderInfoAccept>> GetOrderAsync(BitMaxAccountType cashAccountType, string orderId, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>
             {
                 { "orderId", orderId }
             };
 
-            var url = Endpoints_Cash_Order_Query.Replace("{account-category}", cashAccountType == BitMaxCashAccountType.Spot ? "cash" : "margin");
+            var url = Endpoints_Cash_Order_Query.Replace("{account-category}", cashAccountType == BitMaxAccountType.Spot ? "cash" : "margin");
             var result = await SendRequest<BitMaxApiResponse<BitMaxCashPlacedOrderInfoAccept>>(GetUrl(url), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<BitMaxCashPlacedOrderInfoAccept>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxCashPlacedOrderInfoAccept>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
             return new WebCallResult<BitMaxCashPlacedOrderInfoAccept>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Data, null);
         }
-        
+
         /// <summary>
         /// This API returns all current open orders for the account specified.
         /// </summary>
         /// <param name="symbol">A valid symbol</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>> GetSpotOpenOrders(string symbol = null, CancellationToken ct = default) => GetOpenOrdersAsync(BitMaxCashAccountType.Spot, symbol, ct).Result;
+        public WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>> GetSpotOpenOrders(string symbol = null, CancellationToken ct = default) => GetOpenOrdersAsync(BitMaxAccountType.Spot, symbol, ct).Result;
         /// <summary>
         /// This API returns all current open orders for the account specified.
         /// </summary>
         /// <param name="symbol">A valid symbol</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>> GetMarginOpenOrders(string symbol = null, CancellationToken ct = default) => GetOpenOrdersAsync(BitMaxCashAccountType.Margin, symbol, ct).Result;
+        public WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>> GetMarginOpenOrders(string symbol = null, CancellationToken ct = default) => GetOpenOrdersAsync(BitMaxAccountType.Margin, symbol, ct).Result;
         /// <summary>
         /// This API returns all current open orders for the account specified.
         /// </summary>
         /// <param name="symbol">A valid symbol</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>> GetSpotOpenOrdersAsync(string symbol = null, CancellationToken ct = default) => await GetOpenOrdersAsync(BitMaxCashAccountType.Spot, symbol, ct);
+        public async Task<WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>> GetSpotOpenOrdersAsync(string symbol = null, CancellationToken ct = default) => await GetOpenOrdersAsync(BitMaxAccountType.Spot, symbol, ct);
         /// <summary>
         /// This API returns all current open orders for the account specified.
         /// </summary>
         /// <param name="symbol">A valid symbol</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>> GetMarginOpenOrdersAsync(string symbol = null, CancellationToken ct = default) => await GetOpenOrdersAsync(BitMaxCashAccountType.Margin, symbol, ct);
-        private async Task<WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>> GetOpenOrdersAsync(BitMaxCashAccountType cashAccountType, string symbol = null, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>> GetMarginOpenOrdersAsync(string symbol = null, CancellationToken ct = default) => await GetOpenOrdersAsync(BitMaxAccountType.Margin, symbol, ct);
+        private async Task<WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>> GetOpenOrdersAsync(BitMaxAccountType cashAccountType, string symbol = null, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>();
             parameters.AddOptionalParameter("symbol", symbol);
 
-            var url = Endpoints_Cash_Order_OpenOrders.Replace("{account-category}", cashAccountType == BitMaxCashAccountType.Spot ? "cash" : "margin");
+            var url = Endpoints_Cash_Order_OpenOrders.Replace("{account-category}", cashAccountType == BitMaxAccountType.Spot ? "cash" : "margin");
             var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>>(GetUrl(url), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
@@ -1015,7 +1186,7 @@ namespace BitMax.Net
         /// <param name="limit">maximum number of orders to be included in the response</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>> GetSpotCurrentHistoryOrders(string symbol = null, bool executedOnly = false, int limit = 100, CancellationToken ct = default) => GetCurrentHistoryOrdersAsync(BitMaxCashAccountType.Spot, symbol, executedOnly, limit, ct).Result;
+        public WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>> GetSpotCurrentHistoryOrders(string symbol = null, bool executedOnly = false, int limit = 100, CancellationToken ct = default) => GetCurrentHistoryOrdersAsync(BitMaxAccountType.Spot, symbol, executedOnly, limit, ct).Result;
         /// <summary>
         /// This API returns all current history orders for the account specified. If you need earlier data or more filter, please refer to Order History API.
         /// </summary>
@@ -1024,7 +1195,7 @@ namespace BitMax.Net
         /// <param name="limit">maximum number of orders to be included in the response</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>> GetMarginCurrentHistoryOrders(string symbol = null, bool executedOnly = false, int limit = 100, CancellationToken ct = default) => GetCurrentHistoryOrdersAsync(BitMaxCashAccountType.Margin, symbol, executedOnly, limit, ct).Result;
+        public WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>> GetMarginCurrentHistoryOrders(string symbol = null, bool executedOnly = false, int limit = 100, CancellationToken ct = default) => GetCurrentHistoryOrdersAsync(BitMaxAccountType.Margin, symbol, executedOnly, limit, ct).Result;
         /// <summary>
         /// This API returns all current history orders for the account specified. If you need earlier data or more filter, please refer to Order History API.
         /// </summary>
@@ -1033,7 +1204,7 @@ namespace BitMax.Net
         /// <param name="limit">maximum number of orders to be included in the response</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>> GetSpotCurrentHistoryOrdersAsync(string symbol = null, bool executedOnly = false, int limit = 100, CancellationToken ct = default) => await GetCurrentHistoryOrdersAsync(BitMaxCashAccountType.Spot, symbol, executedOnly, limit, ct);
+        public async Task<WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>> GetSpotCurrentHistoryOrdersAsync(string symbol = null, bool executedOnly = false, int limit = 100, CancellationToken ct = default) => await GetCurrentHistoryOrdersAsync(BitMaxAccountType.Spot, symbol, executedOnly, limit, ct);
         /// <summary>
         /// This API returns all current history orders for the account specified. If you need earlier data or more filter, please refer to Order History API.
         /// </summary>
@@ -1042,8 +1213,8 @@ namespace BitMax.Net
         /// <param name="limit">maximum number of orders to be included in the response</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>> GetMarginCurrentHistoryOrdersAsync(string symbol = null, bool executedOnly = false, int limit = 100, CancellationToken ct = default) => await GetCurrentHistoryOrdersAsync(BitMaxCashAccountType.Margin, symbol, executedOnly, limit, ct);
-        private async Task<WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>> GetCurrentHistoryOrdersAsync(BitMaxCashAccountType cashAccountType, string symbol = null, bool executedOnly = false, int limit = 100, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>> GetMarginCurrentHistoryOrdersAsync(string symbol = null, bool executedOnly = false, int limit = 100, CancellationToken ct = default) => await GetCurrentHistoryOrdersAsync(BitMaxAccountType.Margin, symbol, executedOnly, limit, ct);
+        private async Task<WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>> GetCurrentHistoryOrdersAsync(BitMaxAccountType cashAccountType, string symbol = null, bool executedOnly = false, int limit = 100, CancellationToken ct = default)
         {
             var parameters = new Dictionary<string, object>
             {
@@ -1052,7 +1223,7 @@ namespace BitMax.Net
             };
             parameters.AddOptionalParameter("symbol", symbol);
 
-            var url = Endpoints_Cash_Order_CurrentHistoryOrders.Replace("{account-category}", cashAccountType == BitMaxCashAccountType.Spot ? "cash" : "margin");
+            var url = Endpoints_Cash_Order_CurrentHistoryOrders.Replace("{account-category}", cashAccountType == BitMaxAccountType.Spot ? "cash" : "margin");
             var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>>(GetUrl(url), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
@@ -1078,7 +1249,7 @@ namespace BitMax.Net
         /// <param name="limit">number of records to return. default 500, max 1000.</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>> GetSpotHistoryOrders(string symbol = null, DateTime? startTime = null, DateTime? endTime = null, long? seqNum = null, int limit = 500, CancellationToken ct = default) => GetCurrentOrdersAsync(BitMaxCashAccountType.Spot, symbol, startTime, endTime, seqNum, limit, ct).Result;
+        public WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>> GetSpotHistoryOrders(string symbol = null, DateTime? startTime = null, DateTime? endTime = null, long? seqNum = null, int limit = 500, CancellationToken ct = default) => GetCurrentOrdersAsync(BitMaxAccountType.Spot, symbol, startTime, endTime, seqNum, limit, ct).Result;
         /// <summary>
         /// This API returns history orders according to specified parameters (up to 500 records). You have access to at least 30 days of order history.
         /// Please note seqNum increases regirously but not continuously in response.
@@ -1097,7 +1268,7 @@ namespace BitMax.Net
         /// <param name="limit">number of records to return. default 500, max 1000.</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>> GetMarginHistoryOrders(string symbol = null, DateTime? startTime = null, DateTime? endTime = null, long? seqNum = null, int limit = 500, CancellationToken ct = default) => GetCurrentOrdersAsync(BitMaxCashAccountType.Margin, symbol, startTime, endTime, seqNum, limit, ct).Result;
+        public WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>> GetMarginHistoryOrders(string symbol = null, DateTime? startTime = null, DateTime? endTime = null, long? seqNum = null, int limit = 500, CancellationToken ct = default) => GetCurrentOrdersAsync(BitMaxAccountType.Margin, symbol, startTime, endTime, seqNum, limit, ct).Result;
         /// <summary>
         /// This API returns history orders according to specified parameters (up to 500 records). You have access to at least 30 days of order history.
         /// Please note seqNum increases regirously but not continuously in response.
@@ -1116,7 +1287,7 @@ namespace BitMax.Net
         /// <param name="limit">number of records to return. default 500, max 1000.</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>> GetSpotHistoryOrdersAsync(string symbol = null, DateTime? startTime = null, DateTime? endTime = null, long? seqNum = null, int limit = 500, CancellationToken ct = default) => await GetCurrentOrdersAsync(BitMaxCashAccountType.Spot, symbol, startTime, endTime, seqNum, limit, ct);
+        public async Task<WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>> GetSpotHistoryOrdersAsync(string symbol = null, DateTime? startTime = null, DateTime? endTime = null, long? seqNum = null, int limit = 500, CancellationToken ct = default) => await GetCurrentOrdersAsync(BitMaxAccountType.Spot, symbol, startTime, endTime, seqNum, limit, ct);
         /// <summary>
         /// This API returns history orders according to specified parameters (up to 500 records). You have access to at least 30 days of order history.
         /// Please note seqNum increases regirously but not continuously in response.
@@ -1135,13 +1306,13 @@ namespace BitMax.Net
         /// <param name="limit">number of records to return. default 500, max 1000.</param>
         /// <param name="ct">Cancellation Token</param>
         /// <returns></returns>
-        public async Task<WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>> GetMarginHistoryOrdersAsync(string symbol = null, DateTime? startTime = null, DateTime? endTime = null, long? seqNum = null, int limit = 500, CancellationToken ct = default) => await GetCurrentOrdersAsync(BitMaxCashAccountType.Margin, symbol, startTime, endTime, seqNum, limit, ct);
-        private async Task<WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>> GetCurrentOrdersAsync(BitMaxCashAccountType cashAccountType, string symbol = null, DateTime? startTime = null, DateTime? endTime = null, long? seqNum = null, int limit = 500, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>> GetMarginHistoryOrdersAsync(string symbol = null, DateTime? startTime = null, DateTime? endTime = null, long? seqNum = null, int limit = 500, CancellationToken ct = default) => await GetCurrentOrdersAsync(BitMaxAccountType.Margin, symbol, startTime, endTime, seqNum, limit, ct);
+        private async Task<WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>> GetCurrentOrdersAsync(BitMaxAccountType cashAccountType, string symbol = null, DateTime? startTime = null, DateTime? endTime = null, long? seqNum = null, int limit = 500, CancellationToken ct = default)
         {
             limit.ValidateIntBetween(nameof(limit), 1, 1000);
             var parameters = new Dictionary<string, object>
             {
-                { "account", cashAccountType == BitMaxCashAccountType.Spot ? "cash" : "margin" },
+                { "account", cashAccountType == BitMaxAccountType.Spot ? "cash" : "margin" },
                 { "limit", limit },
             };
             parameters.AddOptionalParameter("symbol", symbol);
@@ -1149,7 +1320,7 @@ namespace BitMax.Net
             if (startTime.HasValue) parameters.AddOptionalParameter("startTime", startTime.Value.ToUnixTimeMilliseconds());
             if (startTime.HasValue) parameters.AddOptionalParameter("endTime", endTime.Value.ToUnixTimeMilliseconds());
 
-            var url = Endpoints_Cash_Order_HistoryOrders.Replace("{account-category}", cashAccountType == BitMaxCashAccountType.Spot ? "cash" : "margin");
+            var url = Endpoints_Cash_Order_HistoryOrders.Replace("{account-category}", cashAccountType == BitMaxAccountType.Spot ? "cash" : "margin");
             var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>>(GetUrl(url), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
@@ -1160,17 +1331,748 @@ namespace BitMax.Net
         #endregion
 
         #region Futures Api Methods
-
-        public WebCallResult<IEnumerable<BitMaxAsset>> GetFuturesAssets(CancellationToken ct = default) => GetFuturesAssetsAsync(ct).Result;
-        public async Task<WebCallResult<IEnumerable<BitMaxAsset>>> GetFuturesAssetsAsync(CancellationToken ct = default)
+        /// <summary>
+        /// You can get a list of assets eligible to be used as collateral with this API, along with other information needed to calculate the total collateral value of your account.
+        /// The exchange calculates the total collateral value of an account based on its adjusted USDT value (discount factor * reference price * collateral balance). The collateral value of the account is simply the sum of the adjusted USDT value of its all collateral assets.
+        /// </summary>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public WebCallResult<IEnumerable<BitMaxFuturesAsset>> GetFuturesAssets(CancellationToken ct = default) => GetFuturesAssetsAsync(ct).Result;
+        /// <summary>
+        /// You can get a list of assets eligible to be used as collateral with this API, along with other information needed to calculate the total collateral value of your account.
+        /// The exchange calculates the total collateral value of an account based on its adjusted USDT value (discount factor * reference price * collateral balance). The collateral value of the account is simply the sum of the adjusted USDT value of its all collateral assets.
+        /// </summary>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<IEnumerable<BitMaxFuturesAsset>>> GetFuturesAssetsAsync(CancellationToken ct = default)
         {
-            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxAsset>>>(GetUrl(Endpoints_Cash_MarketData_Assets), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false).ConfigureAwait(false);
-            if (!result.Success) return WebCallResult<IEnumerable<BitMaxAsset>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
-            if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxAsset>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
+            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxFuturesAsset>>>(GetUrl(Endpoints_Futures_MarketData_CollateralAssets), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false).ConfigureAwait(false);
+            if (!result.Success) return WebCallResult<IEnumerable<BitMaxFuturesAsset>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
+            if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxFuturesAsset>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
-            return new WebCallResult<IEnumerable<BitMaxAsset>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Data, null);
+            return new WebCallResult<IEnumerable<BitMaxFuturesAsset>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Data, null);
         }
 
+        /// <summary>
+        /// Gets Futures Contracts
+        /// Remark: from 2020-07-13 12:00 UTC onward, the BitMax.io website, the Andriod App, and the iOS App will be showing displayName (BTCUSDT) instead of symbol (BTC-PERP) as indicated in the response body of this API. This is for display purposes only. API users should continue to use symbol (BTC-PERP) to make API calls and to parse RESTful responses and WebSocket messages from the server.
+        /// </summary>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public WebCallResult<IEnumerable<BitMaxFuturesContract>> GetFuturesContracts(CancellationToken ct = default) => GetFuturesContractsAsync(ct).Result;
+        /// <summary>
+        /// Gets Futures Contracts
+        /// Remark: from 2020-07-13 12:00 UTC onward, the BitMax.io website, the Andriod App, and the iOS App will be showing displayName (BTCUSDT) instead of symbol (BTC-PERP) as indicated in the response body of this API. This is for display purposes only. API users should continue to use symbol (BTC-PERP) to make API calls and to parse RESTful responses and WebSocket messages from the server.
+        /// </summary>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<IEnumerable<BitMaxFuturesContract>>> GetFuturesContractsAsync(CancellationToken ct = default)
+        {
+            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxFuturesContract>>>(GetUrl(Endpoints_Futures_MarketData_Contracts), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false).ConfigureAwait(false);
+            if (!result.Success) return WebCallResult<IEnumerable<BitMaxFuturesContract>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
+            if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxFuturesContract>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
+
+            return new WebCallResult<IEnumerable<BitMaxFuturesContract>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Data, null);
+        }
+
+        /// <summary>
+        /// Gets Futures Reference Prices
+        /// </summary>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public WebCallResult<IEnumerable<BitMaxFuturesReferencePrice>> GetFuturesReferencePrices(CancellationToken ct = default) => GetFuturesReferencePricesAsync(ct).Result;
+        /// <summary>
+        /// Gets Futures Reference Prices
+        /// </summary>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<IEnumerable<BitMaxFuturesReferencePrice>>> GetFuturesReferencePricesAsync(CancellationToken ct = default)
+        {
+            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxFuturesReferencePrice>>>(GetUrl(Endpoints_Futures_MarketData_ReferencePrices), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false).ConfigureAwait(false);
+            if (!result.Success) return WebCallResult<IEnumerable<BitMaxFuturesReferencePrice>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
+            if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxFuturesReferencePrice>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
+
+            return new WebCallResult<IEnumerable<BitMaxFuturesReferencePrice>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Data, null);
+        }
+
+        /// <summary>
+        /// Gets Futures Market Data
+        /// By default, the API returns data for all contracts traded on the exchange. You can provide an optional parameter symbol to taylor the result to a specific subset of contracts.
+        /// In most cases, this API will return a list of objects.However, it you set symbol to a single contract, such as symbol= BTC - PERP, the API will return the object itself instead.If you want the response to alaways be a list of objects, append a comma (e.g.symbol= BTC - PERP,).
+        /// </summary>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public WebCallResult<IEnumerable<BitMaxFuturesMarketData>> GetFuturesMarketData(CancellationToken ct = default) => GetFuturesMarketDataAsync(new List<string> { }, ct).Result;
+        /// <summary>
+        /// Gets Futures Market Data
+        /// By default, the API returns data for all contracts traded on the exchange. You can provide an optional parameter symbol to taylor the result to a specific subset of contracts.
+        /// In most cases, this API will return a list of objects.However, it you set symbol to a single contract, such as symbol= BTC - PERP, the API will return the object itself instead.If you want the response to alaways be a list of objects, append a comma (e.g.symbol= BTC - PERP,).
+        /// </summary>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<IEnumerable<BitMaxFuturesMarketData>>> GetFuturesMarketDataAsync(CancellationToken ct = default) => await GetFuturesMarketDataAsync(new List<string> { }, ct);
+        /// <summary>
+        /// Gets Futures Market Data
+        /// By default, the API returns data for all contracts traded on the exchange. You can provide an optional parameter symbol to taylor the result to a specific subset of contracts.
+        /// In most cases, this API will return a list of objects.However, it you set symbol to a single contract, such as symbol= BTC - PERP, the API will return the object itself instead.If you want the response to alaways be a list of objects, append a comma (e.g.symbol= BTC - PERP,).
+        /// </summary>
+        /// <param name="symbol">Symbol</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public WebCallResult<IEnumerable<BitMaxFuturesMarketData>> GetFuturesMarketData(string symbol, CancellationToken ct = default) => GetFuturesMarketDataAsync(new List<string> { symbol }, ct).Result;
+        /// <summary>
+        /// Gets Futures Market Data
+        /// By default, the API returns data for all contracts traded on the exchange. You can provide an optional parameter symbol to taylor the result to a specific subset of contracts.
+        /// In most cases, this API will return a list of objects.However, it you set symbol to a single contract, such as symbol= BTC - PERP, the API will return the object itself instead.If you want the response to alaways be a list of objects, append a comma (e.g.symbol= BTC - PERP,).
+        /// </summary>
+        /// <param name="symbol">Symbol</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<IEnumerable<BitMaxFuturesMarketData>>> GetFuturesMarketDataAsync(string symbol, CancellationToken ct = default) => await GetFuturesMarketDataAsync(new List<string> { symbol }, ct);
+        /// <summary>
+        /// Gets Futures Market Data
+        /// By default, the API returns data for all contracts traded on the exchange. You can provide an optional parameter symbol to taylor the result to a specific subset of contracts.
+        /// In most cases, this API will return a list of objects.However, it you set symbol to a single contract, such as symbol= BTC - PERP, the API will return the object itself instead.If you want the response to alaways be a list of objects, append a comma (e.g.symbol= BTC - PERP,).
+        /// </summary>
+        /// <param name="symbols">Symbol List</param>
+        /// <returns></returns>
+        public WebCallResult<IEnumerable<BitMaxFuturesMarketData>> GetFuturesMarketData(params string[] symbols) => GetFuturesMarketDataAsync(symbols, default).Result;
+        /// <summary>
+        /// Gets Futures Market Data
+        /// By default, the API returns data for all contracts traded on the exchange. You can provide an optional parameter symbol to taylor the result to a specific subset of contracts.
+        /// In most cases, this API will return a list of objects.However, it you set symbol to a single contract, such as symbol= BTC - PERP, the API will return the object itself instead.If you want the response to alaways be a list of objects, append a comma (e.g.symbol= BTC - PERP,).
+        /// </summary>
+        /// <param name="symbols">Symbol List</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<IEnumerable<BitMaxFuturesMarketData>>> GetFuturesMarketDataAsync(params string[] symbols) => await GetFuturesMarketDataAsync(symbols, default);
+        /// <summary>
+        /// Gets Futures Market Data
+        /// By default, the API returns data for all contracts traded on the exchange. You can provide an optional parameter symbol to taylor the result to a specific subset of contracts.
+        /// In most cases, this API will return a list of objects.However, it you set symbol to a single contract, such as symbol= BTC - PERP, the API will return the object itself instead.If you want the response to alaways be a list of objects, append a comma (e.g.symbol= BTC - PERP,).
+        /// </summary>
+        /// <param name="symbols">Symbol List</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public WebCallResult<IEnumerable<BitMaxFuturesMarketData>> GetFuturesMarketData(IEnumerable<string> symbols, CancellationToken ct = default) => GetFuturesMarketDataAsync(symbols, ct).Result;
+        /// <summary>
+        /// Gets Futures Market Data
+        /// By default, the API returns data for all contracts traded on the exchange. You can provide an optional parameter symbol to taylor the result to a specific subset of contracts.
+        /// In most cases, this API will return a list of objects.However, it you set symbol to a single contract, such as symbol= BTC - PERP, the API will return the object itself instead.If you want the response to alaways be a list of objects, append a comma (e.g.symbol= BTC - PERP,).
+        /// </summary>
+        /// <param name="symbols">Symbol List</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<IEnumerable<BitMaxFuturesMarketData>>> GetFuturesMarketDataAsync(IEnumerable<string> symbols, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object>();
+            if (symbols != null && symbols.Count() > 0) parameters.Add("symbol", string.Join(",", symbols) + ","); // Comma Suffix Trick
+
+            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxFuturesMarketData>>>(GetUrl(Endpoints_Futures_MarketData_MarketData), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false, parameters: parameters).ConfigureAwait(false);
+            if (!result.Success) return WebCallResult<IEnumerable<BitMaxFuturesMarketData>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
+            if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxFuturesMarketData>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
+
+            return new WebCallResult<IEnumerable<BitMaxFuturesMarketData>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Data, null);
+        }
+
+        /// <summary>
+        /// Gets Futures Funding Rates
+        /// </summary>
+        /// <param name="page">Page Number</param>
+        /// <param name="pageSize">Page Size</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public WebCallResult<BitMaxPagedData<BitMaxFuturesFundingRate>> GetFuturesFundingRates(int page = 1, int pageSize = 100, CancellationToken ct = default) => GetFuturesFundingRatesAsync(page, pageSize, ct).Result;
+        /// <summary>
+        /// Gets Futures Funding Rates
+        /// </summary>
+        /// <param name="page">Page Number</param>
+        /// <param name="pageSize">Page Size</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitMaxPagedData<BitMaxFuturesFundingRate>>> GetFuturesFundingRatesAsync(int page = 1, int pageSize = 100, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object> {
+                {"page", page},
+                {"pageSize", pageSize},
+            };
+
+            var result = await SendRequest<BitMaxApiResponse<BitMaxPagedData<BitMaxFuturesFundingRate>>>(GetUrl(Endpoints_Futures_MarketData_FundingRates), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false, parameters: parameters).ConfigureAwait(false);
+            if (!result.Success) return WebCallResult<BitMaxPagedData<BitMaxFuturesFundingRate>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
+            if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxPagedData<BitMaxFuturesFundingRate>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
+
+            return new WebCallResult<BitMaxPagedData<BitMaxFuturesFundingRate>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Data, null);
+        }
+
+        /// <summary>
+        /// Gets Futures Balances
+        /// </summary>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public WebCallResult<IEnumerable<BitMaxFuturesBalance>> GetFuturesBalances(CancellationToken ct = default) => GetFuturesBalancesAsync(ct).Result;
+        /// <summary>
+        /// Gets Futures Balances
+        /// </summary>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<IEnumerable<BitMaxFuturesBalance>>> GetFuturesBalancesAsync(CancellationToken ct = default)
+        {
+            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxFuturesBalance>>>(GetUrl(Endpoints_Futures_Balance_CollateralBalance), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true).ConfigureAwait(false);
+            if (!result.Success) return WebCallResult<IEnumerable<BitMaxFuturesBalance>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
+            if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxFuturesBalance>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
+
+            return new WebCallResult<IEnumerable<BitMaxFuturesBalance>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Data, null);
+        }
+
+        /// <summary>
+        /// Gets Futures Positions
+        /// </summary>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public WebCallResult<IEnumerable<BitMaxFuturesPosition>> GetFuturesPositions(CancellationToken ct = default) => GetFuturesPositionsAsync(ct).Result;
+        /// <summary>
+        /// Gets Futures Positions
+        /// </summary>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<IEnumerable<BitMaxFuturesPosition>>> GetFuturesPositionsAsync(CancellationToken ct = default)
+        {
+            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxFuturesPosition>>>(GetUrl(Endpoints_Futures_Balance_ContractPosition), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true).ConfigureAwait(false);
+            if (!result.Success) return WebCallResult<IEnumerable<BitMaxFuturesPosition>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
+            if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxFuturesPosition>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
+
+            return new WebCallResult<IEnumerable<BitMaxFuturesPosition>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Data, null);
+        }
+
+        /// <summary>
+        /// You can obtain the status of the overall account from this API.
+        /// </summary>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public WebCallResult<BitMaxFuturesRisk> GetFuturesRisk(CancellationToken ct = default) => GetFuturesRiskAsync(ct).Result;
+        /// <summary>
+        /// You can obtain the status of the overall account from this API.
+        /// </summary>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitMaxFuturesRisk>> GetFuturesRiskAsync(CancellationToken ct = default)
+        {
+            var result = await SendRequest<BitMaxApiResponse<BitMaxFuturesRisk>>(GetUrl(Endpoints_Futures_Balance_AccountRisk), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true).ConfigureAwait(false);
+            if (!result.Success) return WebCallResult<BitMaxFuturesRisk>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
+            if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxFuturesRisk>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
+
+            return new WebCallResult<BitMaxFuturesRisk>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Data, null);
+        }
+
+        /// <summary>
+        /// Gets Futures Funding Payments History
+        /// </summary>
+        /// <param name="page">Page Number</param>
+        /// <param name="pageSize">Page Size</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public WebCallResult<BitMaxPagedData<BitMaxFuturesFundingPayment>> GetFuturesFundingPayments(int page = 1, int pageSize = 100, CancellationToken ct = default) => GetFuturesFundingPaymentsAsync(new List<string> { }, page, pageSize, ct).Result;
+        /// <summary>
+        /// Gets Futures Funding Payments History
+        /// </summary>
+        /// <param name="page">Page Number</param>
+        /// <param name="pageSize">Page Size</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitMaxPagedData<BitMaxFuturesFundingPayment>>> GetFuturesFundingPaymentsAsync(int page = 1, int pageSize = 100, CancellationToken ct = default) => await GetFuturesFundingPaymentsAsync(new List<string> { }, page, pageSize, ct);
+        /// <summary>
+        /// Gets Futures Funding Payments History
+        /// </summary>
+        /// <param name="symbol">Symbol</param>
+        /// <param name="page">Page Number</param>
+        /// <param name="pageSize">Page Size</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public WebCallResult<BitMaxPagedData<BitMaxFuturesFundingPayment>> GetFuturesFundingPayments(string symbol, int page = 1, int pageSize = 100, CancellationToken ct = default) => GetFuturesFundingPaymentsAsync(new List<string> { symbol }, page, pageSize, ct).Result;
+        /// <summary>
+        /// Gets Futures Funding Payments History
+        /// </summary>
+        /// <param name="symbol">Symbol</param>
+        /// <param name="page">Page Number</param>
+        /// <param name="pageSize">Page Size</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitMaxPagedData<BitMaxFuturesFundingPayment>>> GetFuturesFundingPaymentsAsync(string symbol, int page = 1, int pageSize = 100, CancellationToken ct = default) => await GetFuturesFundingPaymentsAsync(new List<string> { symbol }, page, pageSize, ct);
+        /// <summary>
+        /// Gets Futures Funding Payments History
+        /// </summary>
+        /// <param name="symbols">Symbol List</param>
+        /// <returns></returns>
+        public WebCallResult<BitMaxPagedData<BitMaxFuturesFundingPayment>> GetFuturesFundingPayments(params string[] symbols) => GetFuturesFundingPaymentsAsync(symbols).Result;
+        /// <summary>
+        /// Gets Futures Funding Payments History
+        /// </summary>
+        /// <param name="symbols">Symbol List</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitMaxPagedData<BitMaxFuturesFundingPayment>>> GetFuturesFundingPaymentsAsync(params string[] symbols) => await GetFuturesFundingPaymentsAsync(symbols);
+        /// <summary>
+        /// Gets Futures Funding Payments History
+        /// </summary>
+        /// <param name="symbols">Symbol List</param>
+        /// <param name="page">Page Number</param>
+        /// <param name="pageSize">Page Size</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public WebCallResult<BitMaxPagedData<BitMaxFuturesFundingPayment>> GetFuturesFundingPayments(IEnumerable<string> symbols, int page = 1, int pageSize = 100, CancellationToken ct = default) => GetFuturesFundingPaymentsAsync(symbols, page, pageSize, ct).Result;
+        /// <summary>
+        /// Gets Futures Funding Payments History
+        /// </summary>
+        /// <param name="symbols">Symbol List</param>
+        /// <param name="page">Page Number</param>
+        /// <param name="pageSize">Page Size</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitMaxPagedData<BitMaxFuturesFundingPayment>>> GetFuturesFundingPaymentsAsync(IEnumerable<string> symbols, int page = 1, int pageSize = 100, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object> {
+                {"page", page},
+                {"pageSize", pageSize},
+            };
+            if (symbols != null && symbols.Count() > 0) parameters.Add("symbol", string.Join(",", symbols) + ","); // Comma Suffix Trick
+
+            var result = await SendRequest<BitMaxApiResponse<BitMaxPagedData<BitMaxFuturesFundingPayment>>>(GetUrl(Endpoints_Futures_Balance_FundingPaymentHistory), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            if (!result.Success) return WebCallResult<BitMaxPagedData<BitMaxFuturesFundingPayment>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
+            if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxPagedData<BitMaxFuturesFundingPayment>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
+
+            return new WebCallResult<BitMaxPagedData<BitMaxFuturesFundingPayment>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Data, null);
+        }
+
+        /// <summary>
+        /// Transfers asset from Cash to Futures Account
+        /// If the transfer request succeeded, the API will respond with a simple object with code=0. If the transfer request failed, the API will respond with code other than 0 along with an error message.
+        /// </summary>
+        /// <param name="asset">asset to transfer</param>
+        /// <param name="amount">amount to transfer</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public WebCallResult<bool> TransferFromCashToFutures(string asset, decimal amount, CancellationToken ct = default) => TransferFromCashToFuturesAsync(asset, amount, ct).Result;
+        /// <summary>
+        /// Transfers asset from Cash to Futures Account
+        /// If the transfer request succeeded, the API will respond with a simple object with code=0. If the transfer request failed, the API will respond with code other than 0 along with an error message.
+        /// </summary>
+        /// <param name="asset">asset to transfer</param>
+        /// <param name="amount">amount to transfer</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<bool>> TransferFromCashToFuturesAsync(string asset, decimal amount, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object> {
+                {"asset", asset},
+                {"amount", amount.ToString(CultureInfo.InvariantCulture)},
+            };
+            var result = await SendRequest<BitMaxApiResponse<bool>>(GetUrl(Endpoints_Futures_Wallet_TransferFromCashToFuturesAccount), method: HttpMethod.Post, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            if (!result.Success) return WebCallResult<bool>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
+            if (result.Data.ErrorCode > 0) return WebCallResult<bool>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
+
+            return new WebCallResult<bool>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.ErrorCode == 0, null);
+        }
+
+        /// <summary>
+        /// Transfers asset from Futures to Cash Account
+        /// If the transfer request succeeded, the API will respond with a simple object with code=0. If the transfer request failed, the API will respond with code other than 0 along with an error message.
+        /// </summary>
+        /// <param name="asset">asset to transfer</param>
+        /// <param name="amount">amount to transfer</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public WebCallResult<bool> TransferFromFuturesToCash(string asset, decimal amount, CancellationToken ct = default) => TransferFromFuturesToCashAsync(asset, amount, ct).Result;
+        /// <summary>
+        /// Transfers asset from Futures to Cash Account
+        /// If the transfer request succeeded, the API will respond with a simple object with code=0. If the transfer request failed, the API will respond with code other than 0 along with an error message.
+        /// </summary>
+        /// <param name="asset">asset to transfer</param>
+        /// <param name="amount">amount to transfer</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<bool>> TransferFromFuturesToCashAsync(string asset, decimal amount, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object> {
+                {"asset", asset},
+                {"amount", amount.ToString(CultureInfo.InvariantCulture)},
+            };
+            var result = await SendRequest<BitMaxApiResponse<bool>>(GetUrl(Endpoints_Futures_Wallet_TransferFromFuturesToCashAccount), method: HttpMethod.Post, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            if (!result.Success) return WebCallResult<bool>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
+            if (result.Data.ErrorCode > 0) return WebCallResult<bool>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
+
+            return new WebCallResult<bool>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.ErrorCode == 0, null);
+        }
+
+        /// <summary>
+        /// Place a new futures order.
+        /// Order Request Criteria
+        /// - When placing a new limit order, the request parameters must meet all criteria defined in the Products API:
+        /// - The order notional must be within range[minNotional, maxNotional]. For limit orders, the order notional is defined as the product of orderPrice and orderQty.
+        /// - orderPrice and stopPrice must be multiples of tickSize.
+        /// - orderQty must be a multiple of lotSize.
+        /// </summary>
+        /// <param name="symbol">Trading Symbol</param>
+        /// <param name="size">Order size. Please set scale properly for each symbol.</param>
+        /// <param name="type">Order type</param>
+        /// <param name="side">["buy", "sell"]</param>
+        /// <param name="orderPrice">The limit price for limit order. Please set price scale properly.</param>
+        /// <param name="clientOrderId">Optional but recommended. Min 9 chars(letter and digit number only). We echo it back to help you match response with request.</param>
+        /// <param name="postOnly">[true, false]</param>
+        /// <param name="timeInForce">GTC: good-till-canceled; IOC: immediate-or-cancel. GTC by default.</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public WebCallResult<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAccept>> PlaceFuturesOrder(string symbol, decimal size, BitMaxFuturesOrderType type, BitMaxOrderSide side, decimal? orderPrice = null, /*decimal? stopPrice = null,*/ string clientOrderId = null, bool postOnly = false, BitMaxCashOrderTimeInForce timeInForce = BitMaxCashOrderTimeInForce.GoodTillCanceled, CancellationToken ct = default) => PlaceFuturesOrderAsync(symbol, size, type, side, orderPrice, /*stopPrice,*/ clientOrderId, postOnly, timeInForce, ct).Result;
+        /// <summary>
+        /// Place a new futures order.
+        /// Order Request Criteria
+        /// - When placing a new limit order, the request parameters must meet all criteria defined in the Products API:
+        /// - The order notional must be within range[minNotional, maxNotional]. For limit orders, the order notional is defined as the product of orderPrice and orderQty.
+        /// - orderPrice and stopPrice must be multiples of tickSize.
+        /// - orderQty must be a multiple of lotSize.
+        /// </summary>
+        /// <param name="symbol">Trading Symbol</param>
+        /// <param name="size">Order size. Please set scale properly for each symbol.</param>
+        /// <param name="type">Order type</param>
+        /// <param name="side">["buy", "sell"]</param>
+        /// <param name="orderPrice">The limit price for limit order. Please set price scale properly.</param>
+        /// <param name="clientOrderId">Optional but recommended. Min 9 chars(letter and digit number only). We echo it back to help you match response with request.</param>
+        /// <param name="postOnly">[true, false]</param>
+        /// <param name="timeInForce">GTC: good-till-canceled; IOC: immediate-or-cancel. GTC by default.</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAccept>>> PlaceFuturesOrderAsync(string symbol, decimal size, BitMaxFuturesOrderType type, BitMaxOrderSide side, decimal? orderPrice = null, /*decimal? stopPrice = null,*/ string clientOrderId = null, bool postOnly = false, BitMaxCashOrderTimeInForce timeInForce = BitMaxCashOrderTimeInForce.GoodTillCanceled, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object> {
+                { "time", DateTime.UtcNow.ToUnixTimeMilliseconds() },
+                { "symbol", symbol },
+                { "orderQty", size.ToString() },
+                { "side", JsonConvert.SerializeObject(side, new OrderSideConverter(false)) },
+                { "orderType", JsonConvert.SerializeObject(type, new FuturesOrderTypeConverter(false)) },
+                { "respInst", JsonConvert.SerializeObject(BitMaxOrderResponseInstruction.ACCEPT, new OrderResponseInstructionConverter(false)) },
+            };
+
+            if (clientOrderId != null)
+            {
+                if (Regex.IsMatch(clientOrderId, "^(([a-z]|[A-Z]|[0-9]){9,32})$")) parameters.Add("id", clientOrderId);
+                else throw new ArgumentException("ClientOrderId supports alphabets (case-sensitive) + numbers, or letters (case-sensitive) between 9-32 characters.");
+            }
+
+            if (type == BitMaxFuturesOrderType.Limit/* || type == BitMaxFuturesOrderType.StopLimit*/)
+            {
+                if (orderPrice == null) throw new ArgumentException("orderPrice is required for Limit " + /*and StopLimit*/ " orders");
+                else parameters.Add("orderPrice", orderPrice.ToString());
+            }
+
+            if (type == BitMaxFuturesOrderType.Limit)
+            {
+                parameters.Add("postOnly", postOnly);
+                parameters.Add("timeInForce", JsonConvert.SerializeObject(timeInForce, new CashOrderTimeInForceConverter(false)));
+            }
+
+            /*
+            if (type == BitMaxFuturesOrderType.StopLimit || type == BitMaxFuturesOrderType.StopMarket)
+            {
+                if (stopPrice == null) throw new ArgumentException("stopPrice is required for StopLimit and StopMarket orders");
+                else parameters.Add("stopPrice", stopPrice.ToString());
+            }
+            */
+
+            var url = Endpoints_Futures_Order_PlaceOrder;
+            var result = await SendRequest<BitMaxApiResponse<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAccept>>>(GetUrl(url), method: HttpMethod.Post, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            if (!result.Success) return WebCallResult<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
+            if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
+
+            return new WebCallResult<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAccept>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Data, null);
+        }
+
+        /// <summary>
+        /// Cancel an existing open order.
+        /// </summary>
+        /// <param name="symbol">Symbol</param>
+        /// <param name="orderId">32 chars order id responded by server when place order</param>
+        /// <param name="clientOrderId">32 chars(letter and digit number only). Please generate unique ID for each trade; we will echo it back to help you identify the response.</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public WebCallResult<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAck>> CancelFuturesOrder(string symbol, string orderId, string clientOrderId = null, CancellationToken ct = default) => CancelFuturesOrderAsync(symbol, orderId, clientOrderId, ct).Result;
+        /// <summary>
+        /// Cancel an existing open order.
+        /// </summary>
+        /// <param name="symbol">Symbol</param>
+        /// <param name="orderId">32 chars order id responded by server when place order</param>
+        /// <param name="clientOrderId">32 chars(letter and digit number only). Please generate unique ID for each trade; we will echo it back to help you identify the response.</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAck>>> CancelFuturesOrderAsync(string symbol, string orderId, string clientOrderId = null, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object> {
+                { "time", DateTime.UtcNow.ToUnixTimeMilliseconds() },
+                { "symbol", symbol },
+                { "orderId", orderId },
+            };
+            parameters.AddOptionalParameter("id", clientOrderId);
+
+            var url = Endpoints_Futures_Order_CancelOrder;
+            var result = await SendRequest<BitMaxApiResponse<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAck>>>(GetUrl(url), method: HttpMethod.Delete, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            if (!result.Success) return WebCallResult<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAck>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
+            if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAck>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
+
+            return new WebCallResult<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAck>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Data, null);
+        }
+
+        /// <summary>
+        /// Cancel all current open orders for the account specified, and optional symbol.
+        /// </summary>
+        /// <param name="symbol">Symbol</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public WebCallResult<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAck>> CancelAllFuturesOrders(string symbol = null, CancellationToken ct = default) => CancelAllFuturesOrdersAsync(symbol, ct).Result;
+        /// <summary>
+        /// Cancel all current open orders for the account specified, and optional symbol.
+        /// </summary>
+        /// <param name="symbol">Symbol</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAck>>> CancelAllFuturesOrdersAsync(string symbol = null, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object>();
+            if (!string.IsNullOrEmpty(symbol))
+                parameters.AddOptionalParameter("symbol", symbol);
+
+            var url = Endpoints_Futures_Order_CancelAllOrders;
+            var result = await SendRequest<BitMaxApiResponse<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAck>>>(GetUrl(url), method: HttpMethod.Delete, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            if (!result.Success) return WebCallResult<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAck>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
+            if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAck>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
+
+            return new WebCallResult<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAck>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Data, null);
+        }
+
+        /// <summary>
+        /// Place multiple orders in a batch. If some order in the batch failed our basic check, then the whole batch request fail.
+        /// You may submit up to 10 orders at a time.Server will respond with error if you submit more than 10 orders.
+        /// </summary>
+        /// <param name="orders">Orders List</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public WebCallResult<BitMaxFuturesPlacedOrder<IEnumerable<BitMaxFuturesPlacedOrderInfoAck>>> PlaceFuturesBatchOrders(IEnumerable<BitMaxFuturesPlaceOrder> orders, CancellationToken ct = default) => PlaceFuturesBatchOrdersAsync(orders, ct).Result;
+        /// <summary>
+        /// Place multiple orders in a batch. If some order in the batch failed our basic check, then the whole batch request fail.
+        /// You may submit up to 10 orders at a time.Server will respond with error if you submit more than 10 orders.
+        /// </summary>
+        /// <param name="orders">Orders List</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitMaxFuturesPlacedOrder<IEnumerable<BitMaxFuturesPlacedOrderInfoAck>>>> PlaceFuturesBatchOrdersAsync(IEnumerable<BitMaxFuturesPlaceOrder> orders, CancellationToken ct = default)
+        {
+            if (orders == null || orders.Count() == 0)
+                throw new ArgumentException("Orders must contain one element");
+
+            if (orders.Count() > 10)
+                throw new ArgumentException("Orders can contain up to ten elements");
+
+            var time = DateTime.UtcNow;
+            for (var i = 0; i < orders.Count(); i++)
+            {
+                var order = orders.ElementAt(i);
+                var suffix = $"(Order: {(i + 1)} of {orders.Count()})";
+
+                if (string.IsNullOrEmpty(order.Symbol))
+                    throw new ArgumentException($"Symbol is required for orders {suffix}");
+
+                if (order.ClientOrderId != null)
+                {
+                    if (!Regex.IsMatch(order.ClientOrderId, "^(([a-z]|[A-Z]|[0-9]){9,32})$"))
+                        throw new ArgumentException($"ClientOrderId supports alphabets (case-sensitive) + numbers, or letters (case-sensitive) between 9-32 characters {suffix}");
+                }
+
+                if (order.OrderType == BitMaxFuturesOrderType.Limit/* || order.OrderType == BitMaxFuturesOrderType.StopLimit*/)
+                {
+                    if (order.OrderPrice == null)
+                        throw new ArgumentException($"OrderPrice is required for Limit" + /*and StopLimit*/ " orders {suffix}");
+                }
+                else
+                {
+                    order.OrderPrice = null;
+                }
+
+                if (order.OrderType == BitMaxFuturesOrderType.Limit)
+                {
+                    if (order.PostOnly == null)
+                        throw new ArgumentException($"PostOnly parameter is required for Limit Orders {suffix}");
+                    if (order.TimeInForce == null)
+                        throw new ArgumentException($"TimeInForce parameter is required for Limit Orders {suffix}");
+                }
+                else
+                {
+                    order.PostOnly = null;
+                    order.TimeInForce = null;
+                }
+
+                /*
+                if (order.OrderType == BitMaxFuturesOrderType.StopLimit || order.OrderType == BitMaxFuturesOrderType.StopMarket)
+                {
+                    if (order.StopPrice == null)
+                        throw new ArgumentException($"StopPrice is required for StopLimit and StopMarket orders {suffix}");
+                }
+                else
+                {
+                    order.StopPrice = null;
+                }
+                */
+
+                order.Time = time;
+                //order.ResponseInstruction = BitMaxCashOrderResponseInstruction.ACK;
+            }
+
+            var parameters = new Dictionary<string, object> {
+                { "orders", orders },
+                //{ "respInst", JsonConvert.SerializeObject(BitMaxCashOrderResponseInstruction.ACK, new CashOrderResponseInstructionConverter(false)) },
+            };
+
+            var url = Endpoints_Futures_Order_PlaceBatchOrders;
+            var result = await SendRequest<BitMaxFuturesPlacedOrder<IEnumerable<BitMaxFuturesPlacedOrderInfoAck>>>(GetUrl(url), method: HttpMethod.Post, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            if (!result.Success) return WebCallResult<BitMaxFuturesPlacedOrder<IEnumerable<BitMaxFuturesPlacedOrderInfoAck>>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
+            // if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxFuturesPlacedOrder<IEnumerable<BitMaxFuturesPlacedOrderInfoAck>>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data.ErrorCode.Value, result.Data.ErrorMessage));
+
+            return new WebCallResult<BitMaxFuturesPlacedOrder<IEnumerable<BitMaxFuturesPlacedOrderInfoAck>>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data, null);
+        }
+
+        /// <summary>
+        /// Cancel multiple orders in a batch. If some order in the batch failed our basic check, then the whole batch request failed.
+        /// </summary>
+        /// <param name="orders">Orders List</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public WebCallResult<BitMaxFuturesPlacedOrder<IEnumerable<BitMaxFuturesPlacedOrderInfoAck>>> CancelFuturesBatchOrders(IEnumerable<BitMaxFuturesCancelOrder> orders, CancellationToken ct = default) => CancelFuturesBatchOrdersAsync(orders, ct).Result;
+        /// <summary>
+        /// Cancel multiple orders in a batch. If some order in the batch failed our basic check, then the whole batch request failed.
+        /// </summary>
+        /// <param name="orders">Orders List</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitMaxFuturesPlacedOrder<IEnumerable<BitMaxFuturesPlacedOrderInfoAck>>>> CancelFuturesBatchOrdersAsync(IEnumerable<BitMaxFuturesCancelOrder> orders, CancellationToken ct = default)
+        {
+            if (orders == null || orders.Count() == 0)
+                throw new ArgumentException("Orders must contain one element");
+
+            if (orders.Count() > 10)
+                throw new ArgumentException("Orders can contain up to ten elements");
+
+            var time = DateTime.UtcNow;
+            for (var i = 0; i < orders.Count(); i++)
+            {
+                var order = orders.ElementAt(i);
+                var suffix = $"(Order: {(i + 1)} of {orders.Count()})";
+
+                if (string.IsNullOrEmpty(order.Symbol))
+                    throw new ArgumentException($"Symbol is required for orders {suffix}");
+
+                if (string.IsNullOrEmpty(order.OrderId))
+                    throw new ArgumentException($"OrderId is required for orders {suffix}");
+
+                order.Time = time;
+                //order.ResponseInstruction = BitMaxCashOrderResponseInstruction.ACK;
+            }
+
+            var parameters = new Dictionary<string, object> {
+                { "orders", orders },
+                //{ "respInst", JsonConvert.SerializeObject(BitMaxCashOrderResponseInstruction.ACK, new CashOrderResponseInstructionConverter(false)) },
+            };
+
+            var url = Endpoints_Futures_Order_CancelBatchOrders;
+            var result = await SendRequest<BitMaxApiResponse<BitMaxFuturesPlacedOrder<IEnumerable<BitMaxFuturesPlacedOrderInfoAck>>>>(GetUrl(url), method: HttpMethod.Delete, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            if (!result.Success) return WebCallResult<BitMaxFuturesPlacedOrder<IEnumerable<BitMaxFuturesPlacedOrderInfoAck>>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
+            // if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxFuturesPlacedOrder<IEnumerable<BitMaxFuturesPlacedOrderInfoAck>>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data.ErrorCode.Value, result.Data.ErrorMessage));
+
+            return new WebCallResult<BitMaxFuturesPlacedOrder<IEnumerable<BitMaxFuturesPlacedOrderInfoAck>>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Data, null);
+        }
+
+        /// <summary>
+        /// Query order status, either open or history order.
+        /// The API will respond with a list of objects in the data field. Each object in the list contains information of a single order. There's one exception, if you use only a single orderId, the data field of the API response will be simplified to a single object. If you want the API to respond with a list of only one object in this case, add a comma , to the orderId.
+        /// </summary>
+        /// <param name="orderId">a single order id, or multiple order ids separated by ,</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public WebCallResult<BitMaxFuturesPlacedOrderInfoAccept> GetFuturesOrder(string orderId, CancellationToken ct = default) => GetFuturesOrderAsync(orderId, ct).Result;
+        /// <summary>
+        /// Query order status, either open or history order.
+        /// The API will respond with a list of objects in the data field. Each object in the list contains information of a single order. There's one exception, if you use only a single orderId, the data field of the API response will be simplified to a single object. If you want the API to respond with a list of only one object in this case, add a comma , to the orderId.
+        /// </summary>
+        /// <param name="orderId">a single order id, or multiple order ids separated by ,</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<BitMaxFuturesPlacedOrderInfoAccept>> GetFuturesOrderAsync(string orderId, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "orderId", orderId }
+            };
+
+            var url = Endpoints_Futures_Order_Query;
+            var result = await SendRequest<BitMaxApiResponse<BitMaxFuturesPlacedOrderInfoAccept>>(GetUrl(url), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            if (!result.Success) return WebCallResult<BitMaxFuturesPlacedOrderInfoAccept>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
+            if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxFuturesPlacedOrderInfoAccept>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
+
+            return new WebCallResult<BitMaxFuturesPlacedOrderInfoAccept>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Data, null);
+        }
+
+        /// <summary>
+        /// This API returns all current open orders for the account specified.
+        /// </summary>
+        /// <param name="symbol">Symbol</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public WebCallResult<IEnumerable<BitMaxFuturesPlacedOrderInfoAccept>> GetFuturesOpenOrders(string symbol = null, CancellationToken ct = default) => GetFuturesOpenOrdersAsync(symbol, ct).Result;
+        /// <summary>
+        /// This API returns all current open orders for the account specified.
+        /// </summary>
+        /// <param name="symbol">Symbol</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<IEnumerable<BitMaxFuturesPlacedOrderInfoAccept>>> GetFuturesOpenOrdersAsync(string symbol = null, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters.AddOptionalParameter("symbol", symbol);
+
+            var url = Endpoints_Futures_Order_OpenOrders;
+            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxFuturesPlacedOrderInfoAccept>>>(GetUrl(url), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            if (!result.Success) return WebCallResult<IEnumerable<BitMaxFuturesPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
+            if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxFuturesPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
+
+            return new WebCallResult<IEnumerable<BitMaxFuturesPlacedOrderInfoAccept>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Data, null);
+        }
+
+        /// <summary>
+        /// This API returns all current history orders for the account specified. This API will only respond with most recently closed orders cached by the server. To query the full history, please use the Historical Orders API.
+        /// </summary>
+        /// <param name="symbol">symbol filter, e.g. "BTMX/USDT"</param>
+        /// <param name="executedOnly">if True, include orders with non-zero filled quantities only.</param>
+        /// <param name="limit">maximum number of orders to be included in the response</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public WebCallResult<IEnumerable<BitMaxFuturesPlacedOrderInfoAccept>> GetFuturesCurrentHistoryOrders(string symbol = null, bool executedOnly = false, int limit = 100, CancellationToken ct = default) => GetFuturesCurrentHistoryOrdersAsync(symbol, executedOnly, limit, ct).Result;
+        /// <summary>
+        /// This API returns all current history orders for the account specified. This API will only respond with most recently closed orders cached by the server. To query the full history, please use the Historical Orders API.
+        /// </summary>
+        /// <param name="symbol">symbol filter, e.g. "BTMX/USDT"</param>
+        /// <param name="executedOnly">if True, include orders with non-zero filled quantities only.</param>
+        /// <param name="limit">maximum number of orders to be included in the response</param>
+        /// <param name="ct">Cancellation Token</param>
+        /// <returns></returns>
+        public async Task<WebCallResult<IEnumerable<BitMaxFuturesPlacedOrderInfoAccept>>> GetFuturesCurrentHistoryOrdersAsync(string symbol = null, bool executedOnly = false, int limit = 100, CancellationToken ct = default)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "n", limit },
+                { "executedOnly", executedOnly },
+            };
+            parameters.AddOptionalParameter("symbol", symbol);
+
+            var url = Endpoints_Futures_Order_CurrentHistoryOrders;
+            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxFuturesPlacedOrderInfoAccept>>>(GetUrl(url), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            if (!result.Success) return WebCallResult<IEnumerable<BitMaxFuturesPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
+            if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxFuturesPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
+
+            return new WebCallResult<IEnumerable<BitMaxFuturesPlacedOrderInfoAccept>>(result.ResponseStatusCode, result.ResponseHeaders, result.Data.Data, null);
+        }
         #endregion
 
         #region Protected Methods

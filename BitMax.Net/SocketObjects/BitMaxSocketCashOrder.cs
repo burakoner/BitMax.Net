@@ -6,6 +6,14 @@ using System;
 
 namespace BitMax.Net.RestObjects
 {
+    public class BitMaxSocketCashOrderExt : BitMaxSocketCashOrder
+    {
+        [JsonProperty("accountId")]
+        public string AccountId { get; set; }
+
+        [JsonProperty("ac"), JsonConverter(typeof(AccountTypeConverter))]
+        public BitMaxAccountType AccountType { get; set; }
+    }
 
     public class BitMaxSocketCashOrder
     {
@@ -54,8 +62,8 @@ namespace BitMax.Net.RestObjects
         [JsonProperty("q")]
         public decimal? Quantity { get; set; }
 
-        [JsonProperty("sd"), JsonConverter(typeof(CashOrderSideConverter))]
-        public BitMaxCashOrderSide Side { get; set; }
+        [JsonProperty("sd"), JsonConverter(typeof(OrderSideConverter))]
+        public BitMaxOrderSide Side { get; set; }
 
         [JsonProperty("sp")]
         public decimal? StopPrice { get; set; }
@@ -69,14 +77,4 @@ namespace BitMax.Net.RestObjects
         [JsonProperty("ei")]
         public string ExecutionInstruction { get; set; }
     }
-
-    public class BitMaxSocketCashOrderExt : BitMaxSocketCashOrder
-    {
-        [JsonProperty("accountId")]
-        public string AccountId { get; set; }
-
-        [JsonProperty("ac"), JsonConverter(typeof(CashAccountTypeConverter))]
-        public BitMaxCashAccountType AccountType { get; set; }
-    }
-
 }

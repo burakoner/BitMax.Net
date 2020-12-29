@@ -1,31 +1,51 @@
 ﻿using BitMax.Net.Converters;
 using BitMax.Net.Enums;
+using CryptoExchange.Net.Attributes;
 using CryptoExchange.Net.Converters;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 
 namespace BitMax.Net.RestObjects
 {
-    public class BitMaxCashPlacedOrder<T>
+    public class BitMaxFuturesPlacedOrder<T>
     {
+        [JsonProperty("code"), JsonOptionalProperty]
+        public int? ErrorCode { get; set; }
+
+        [JsonProperty("message"), JsonOptionalProperty]
+        public string ErrorMessage { get; set; }
+
+        [JsonProperty("reason"), JsonOptionalProperty]
+        public string ErrorReason { get; set; }
+
         [JsonProperty("accountId")]
         public string AccountId { get; set; }
 
-        [JsonProperty("ac"), JsonConverter(typeof(CashAccountTypeConverter))]
-        public BitMaxCashAccountType AccountType { get; set; }
+        [JsonProperty("ac"), JsonConverter(typeof(AccountTypeConverter))]
+        public BitMaxAccountType AccountType { get; set; }
 
         [JsonProperty("action")]
         public string Action { get; set; }
 
-        [JsonProperty("status"), JsonConverter(typeof(CashOrderResponseInstructionConverter))]
-        public BitMaxCashOrderResponseInstruction Status { get; set; }
-        
+        [JsonProperty("status"), JsonConverter(typeof(OrderResponseInstructionConverter))]
+        public BitMaxOrderResponseInstruction Status { get; set; }
+
         [JsonProperty("info")]
         public T Info { get; set; }
     }
 
-    public class BitMaxCashPlacedOrderInfoAccept
+    public class BitMaxFuturesPlacedOrderInfoAccept
     {
+        [JsonProperty("code"), JsonOptionalProperty]
+        public int? ErrorCode { get; set; }
+
+        [JsonProperty("message"), JsonOptionalProperty]
+        public string ErrorMessage { get; set; }
+
+        [JsonProperty("reason"), JsonOptionalProperty]
+        public string ErrorReason { get; set; }
+
         [JsonProperty("id")]
         public string ClientOrderId { get; set; }
         
@@ -62,11 +82,11 @@ namespace BitMax.Net.RestObjects
         [JsonProperty("seqNum")]
         public long SequenceNumber { get; set; }
 
-        [JsonProperty("side"), JsonConverter(typeof(CashOrderSideConverter))]
-        public BitMaxCashOrderSide Side { get; set; }
+        [JsonProperty("side"), JsonConverter(typeof(OrderSideConverter))]
+        public BitMaxOrderSide Side { get; set; }
 
-        [JsonProperty("status"), JsonConverter(typeof(CashOrderStatusConverter))]
-        public BitMaxCashOrderStatus Status { get; set; }
+        [JsonProperty("status"), JsonConverter(typeof(FuturesOrderStatusConverter))]
+        public BitMaxFuturesOrderStatus Status { get; set; }
 
         [JsonProperty("stopPrice")]
         public decimal? StopPrice { get; set; }
@@ -75,8 +95,17 @@ namespace BitMax.Net.RestObjects
         public string ExecutionInstruction { get; set; }
     }
 
-    public class BitMaxCashPlacedOrderInfoAck
+    public class BitMaxFuturesPlacedOrderInfoAck
     {
+        [JsonProperty("code"), JsonOptionalProperty]
+        public int? ErrorCode { get; set; }
+
+        [JsonProperty("message"), JsonOptionalProperty]
+        public string ErrorMessage { get; set; }
+
+        [JsonProperty("reason"), JsonOptionalProperty]
+        public string ErrorReason { get; set; }
+
         [JsonProperty("id")]
         public string Id { get; set; }
         

@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace BitMax.Net.CoreObjects
 {
-    public class BitMaxSocketCashAuthResponse
+    public class BitMaxSocketAuthResponse
     {
         [JsonProperty("m")]
         internal string Method { get; set; }
@@ -20,7 +20,7 @@ namespace BitMax.Net.CoreObjects
         internal string Error { get; set; }
     }
 
-    public class BitMaxSocketCashChannelResponse<T>
+    public class BitMaxSocketChannelResponse<T>
     {
         [JsonProperty("m")]
         internal string Method { get; set; }
@@ -32,7 +32,7 @@ namespace BitMax.Net.CoreObjects
         internal T Data { get; set; }
     }
 
-    public class BitMaxSocketCashBarChannelResponse<T>
+    public class BitMaxSocketBarChannelResponse<T>
     {
         [JsonProperty("m")]
         internal string Method { get; set; }
@@ -52,8 +52,8 @@ namespace BitMax.Net.CoreObjects
         [JsonProperty("accountId")]
         internal string AccountId { get; set; }
 
-        [JsonProperty("ac"), JsonConverter(typeof(CashAccountTypeConverter))]
-        public BitMaxCashAccountType AccountType { get; set; }
+        [JsonProperty("ac"), JsonConverter(typeof(AccountTypeConverter))]
+        public BitMaxAccountType AccountType { get; set; }
 
         [JsonProperty("data")]
         internal T Data { get; set; }

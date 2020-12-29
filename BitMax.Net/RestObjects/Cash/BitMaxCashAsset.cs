@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace BitMax.Net.RestObjects
 {
-    public class BitMaxAsset
+    public class BitMaxCashAsset
     {
         [JsonProperty("assetCode")]
         public string AssetCode { get; set; }

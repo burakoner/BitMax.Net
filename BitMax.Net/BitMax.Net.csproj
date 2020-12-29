@@ -8,7 +8,7 @@
   <PropertyGroup>
     <PackageId>BitMax.Net</PackageId>
     <Authors>Burak Öner</Authors>
-    <PackageVersion>1.0.0</PackageVersion>
+    <PackageVersion>1.1.0</PackageVersion>
     <Description>No description</Description>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageTags></PackageTags>
@@ -16,6 +16,11 @@
     <NeutralLanguage>en</NeutralLanguage>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReleaseNotes>
+Version 1.1.0 - 29 Dec 2020
+- Added Batch Order support
+- Added Futures Rest Api support
+- Added Futures WS Api support
+
 Version 1.0.0
 - First Release
     </PackageReleaseNotes>
@@ -23,10 +28,14 @@ Version 1.0.0
     <PackageIconUrl />
     <PackageProjectUrl>https://github.com/burakoner/BitMax.Net</PackageProjectUrl>
     <RepositoryUrl>https://github.com/burakoner/BitMax.Net</RepositoryUrl>
-    <Version>1.0.0</Version>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
+    <Version>1.1.0</Version>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove=".gitattributes" />
+  </ItemGroup>
   <ItemGroup>
     <Folder Include="Icon\" />
   </ItemGroup>

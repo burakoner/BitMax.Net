@@ -4,7 +4,7 @@ using System;
 
 namespace BitMax.Net.RestObjects
 {
-    public class BitMaxTrade
+    public class BitMaxCashTrade
     {
         [JsonProperty("ts"), JsonConverter(typeof(TimestampConverter))]
         public DateTime Timestamp { get; set; }

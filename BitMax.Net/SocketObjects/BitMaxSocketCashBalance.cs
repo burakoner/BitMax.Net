@@ -24,8 +24,8 @@ namespace BitMax.Net.RestObjects
         [JsonProperty("accountId")]
         public string AccountId { get; set; }
 
-        [JsonProperty("ac"), JsonConverter(typeof(CashAccountTypeConverter))]
-        public BitMaxCashAccountType AccountType { get; set; }
+        [JsonProperty("ac"), JsonConverter(typeof(AccountTypeConverter))]
+        public BitMaxAccountType AccountType { get; set; }
     }
 
     public class BitMaxSocketMarginBalance
@@ -54,7 +54,7 @@ namespace BitMax.Net.RestObjects
         [JsonProperty("accountId")]
         public string AccountId { get; set; }
 
-        [JsonProperty("ac"), JsonConverter(typeof(CashAccountTypeConverter))]
-        public BitMaxCashAccountType AccountType { get; set; }
+        [JsonProperty("ac"), JsonConverter(typeof(AccountTypeConverter))]
+        public BitMaxAccountType AccountType { get; set; }
     }
 }
