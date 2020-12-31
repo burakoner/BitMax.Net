@@ -8,14 +8,22 @@
   <PropertyGroup>
     <PackageId>BitMax.Net</PackageId>
     <Authors>Burak Öner</Authors>
-    <PackageVersion>1.1.0</PackageVersion>
-    <Description>No description</Description>
+    <Version>1.1.2</Version>
+    <FileVersion>1.1.2.0</FileVersion>
+    <PackageVersion>1.1.2</PackageVersion>
+    <AssemblyVersion>1.1.2.0</AssemblyVersion>
+    <Description>
+      BitMax.Net is a .Net wrapper for the BitMax API. It includes all features the API provides, REST API and Websocket, using clear and readable objects including but not limited to Reading market info, placing and managing orders and reading balances and funds
+    </Description>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageTags></PackageTags>
+    <PackageTags>BitMax BitMax.Net API Wrapper Rest WebSocket Trading Finance Algotrading Forex Bitcoin Cryptocurrencies Stock Exchange Derivatives Options</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <NeutralLanguage>en</NeutralLanguage>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReleaseNotes>
+Version 1.1.2 - 31 Dec 2020
+- Fixed some minor bugs
+
 Version 1.1.0 - 29 Dec 2020
 - Added Batch Order support
 - Added Futures Rest Api support
@@ -28,9 +36,6 @@ Version 1.0.0
     <PackageIconUrl />
     <PackageProjectUrl>https://github.com/burakoner/BitMax.Net</PackageProjectUrl>
     <RepositoryUrl>https://github.com/burakoner/BitMax.Net</RepositoryUrl>
-    <Version>1.1.0</Version>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
-    <FileVersion>1.1.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
