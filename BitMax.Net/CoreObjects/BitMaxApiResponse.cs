@@ -16,7 +16,7 @@ namespace BitMax.Net.CoreObjects
         internal string ErrorReason { get; set; }
 
         [JsonProperty("info", NullValueHandling = NullValueHandling.Ignore), JsonOptionalProperty]
-        internal string ErrorInformation { get; set; }
+        internal object ErrorInformation { get; set; }
     }
 
     internal class BitMaxApiResponse<T>: BitMaxResponse
@@ -43,7 +43,7 @@ namespace BitMax.Net.CoreObjects
         public BitMaxError(BitMaxResponse response) : base(response.ErrorCode, response.ErrorMessage, null)
         {
             Reason = response.ErrorReason;
-            Information = response.ErrorInformation;
+            Information = response.ErrorInformation.ToString();
         }
 
         public override string ToString()

@@ -357,6 +357,9 @@ ws.SubscribeToFuturesOrders((data) =>
 ```
 
 ## Release Notes
+* Version 1.1.3 - 10 Jan 2021
+    * Fixed some minor bugs
+
 * Version 1.1.0 - 29 Dec 2020
     * Added Batch Order support
     * Added Futures Rest Api support
