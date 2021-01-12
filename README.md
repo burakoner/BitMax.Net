@@ -361,6 +361,9 @@ ws.SubscribeToFuturesOrders((data) =>
 ```
 
 ## Release Notes
+* Version 1.2.9 - 12 Jan 2021
+    * Fixed some minor bugs
+
 * Version 1.2.8 - 12 Jan 2021
     * Updated CryptoExchange.Net to 3.5.0
 

@@ -43,7 +43,7 @@ namespace BitMax.Net.CoreObjects
         public BitMaxError(BitMaxResponse response) : base(response.ErrorCode, response.ErrorMessage, null)
         {
             Reason = response.ErrorReason;
-            Information = response.ErrorInformation.ToString();
+            Information = response.ErrorInformation?.ToString();
         }
 
         public override string ToString()
