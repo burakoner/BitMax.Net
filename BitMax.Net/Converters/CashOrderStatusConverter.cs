@@ -16,6 +16,7 @@ namespace BitMax.Net.Converters
             new KeyValuePair<BitMaxCashOrderStatus, string>(BitMaxCashOrderStatus.Filled, "Filled"),
             new KeyValuePair<BitMaxCashOrderStatus, string>(BitMaxCashOrderStatus.PartiallyFilled, "PartiallyFilled"),
             new KeyValuePair<BitMaxCashOrderStatus, string>(BitMaxCashOrderStatus.Cancelled, "Cancelled"),
+            new KeyValuePair<BitMaxCashOrderStatus, string>(BitMaxCashOrderStatus.Cancelled, "Canceled"),
             new KeyValuePair<BitMaxCashOrderStatus, string>(BitMaxCashOrderStatus.Reject, "Reject"),
         };
     }
