@@ -132,7 +132,7 @@ namespace BitMax.Net.Examples
 
             /* Web Socket Api Client */
             var credentials = new CryptoExchange.Net.Authentication.ApiCredentials("XXXXXXXX-API-KEY-XXXXXXXX", "XXXXXXXX-API-SECRET-XXXXXXXX");
-            var ws = new BitMaxSocketClient(new BitMaxSocketClientOptions { ApiCredentials = credentials });
+            var ws = new BitMaxSocketClient(new BitMaxSocketClientOptions(account_info.Data.AccountGroup, credentials ));
             var auth = ws.Login();
 
             var sub01 = ws.SubscribeToBestAskBidUpdates(new List<string> { "BTC/USDT", "ETH/USDT" }, (data) =>
@@ -181,6 +181,8 @@ namespace BitMax.Net.Examples
                     Console.WriteLine($"Order >> {data.Symbol} OT:{data.OrderType} P:{data.Price} SP:{data.StopPrice}");
                 }
             });
+
+            // Unsubscribe
             _ = ws.Unsubscribe(sub05.Data);
 
             ws.SubscribeToFuturesMarketData("BTC-PERP", (data) =>

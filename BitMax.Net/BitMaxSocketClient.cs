@@ -437,7 +437,7 @@ namespace BitMax.Net
                 }
             }
 
-            return true;
+            return false;
         }
 
         protected override bool HandleSubscriptionResponse(SocketConnection s, SocketSubscription subscription, object request, JToken message, out CallResult<object> callResult)

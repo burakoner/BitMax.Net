@@ -1,4 +1,5 @@
-﻿using CryptoExchange.Net.Objects;
+﻿using CryptoExchange.Net.Authentication;
+using CryptoExchange.Net.Objects;
 
 namespace BitMax.Net.CoreObjects
 {
@@ -17,6 +18,13 @@ namespace BitMax.Net.CoreObjects
         public BitMaxSocketClientOptions(int accountGroup): base($"wss://bitmax.io/{accountGroup}/api/pro/v1/stream")
         {
             AccountGroup = accountGroup;
+            SocketSubscriptionsCombineTarget = 100;
+        }
+        
+        public BitMaxSocketClientOptions(int accountGroup, ApiCredentials credentials) : base($"wss://bitmax.io/{accountGroup}/api/pro/v1/stream")
+        {
+            AccountGroup = accountGroup;
+            ApiCredentials = credentials;
             SocketSubscriptionsCombineTarget = 100;
         }
 
