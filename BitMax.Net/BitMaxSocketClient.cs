@@ -265,9 +265,9 @@ namespace BitMax.Net
         /// <param name="cashAccountType">Cash Account Type</param>
         /// <param name="onSpotBalanceData">On Data Handler</param>
         /// <param name="onMarginBalanceData">On Data Handler</param>
-        /// <param name="onOrderData">On Data Handler</param>
+        /// <param name="onCashOrderData">On Data Handler</param>
         /// <returns></returns>
-        private async Task<CallResult<UpdateSubscription>> SubscribeToBalanceAndOrdersAsync(BitMaxAccountType cashAccountType, Action<BitMaxSocketSpotBalanceExt> onSpotBalanceData, Action<BitMaxSocketMarginBalanceExt> onMarginBalanceData, Action<BitMaxSocketCashOrderExt> onOrderData)
+        private async Task<CallResult<UpdateSubscription>> SubscribeToBalanceAndOrdersAsync(BitMaxAccountType cashAccountType, Action<BitMaxSocketSpotBalanceExt> onSpotBalanceData, Action<BitMaxSocketMarginBalanceExt> onMarginBalanceData, Action<BitMaxSocketCashOrderExt> onCashOrderData)
         {
             var internalHandler = new Action<BitMaxSocketAccountResponse<object>>(data =>
             {
@@ -294,7 +294,7 @@ namespace BitMax.Net
                     var order = JsonConvert.DeserializeObject<BitMaxSocketCashOrderExt>(data_s);
                     order.AccountId = data.AccountId;
                     order.AccountType = data.AccountType;
-                    if (onSpotBalanceData != null) onOrderData(order);
+                    if (onCashOrderData != null) onCashOrderData(order);
                 }
 
                 //data.Data.Symbol = data.Symbol;

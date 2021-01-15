@@ -361,7 +361,7 @@ ws.SubscribeToFuturesOrders((data) =>
 ```
 
 ## Release Notes
-* Version 1.3.1 - 15 Jan 2021
+* Version 1.3.2 - 15 Jan 2021
     * Fixed some minor bugs
 
 * Version 1.2.8 - 12 Jan 2021
