@@ -8,54 +8,54 @@ namespace BitMax.Net.CoreObjects
     public class BitMaxSocketAuthResponse
     {
         [JsonProperty("m")]
-        internal string Method { get; set; }
+        public string Method { get; set; }
 
         [JsonProperty("id")]
-        internal string RequestId { get; set; }
+        public string RequestId { get; set; }
         
         [JsonProperty("code")]
-        internal int Code { get; set; }
+        public int Code { get; set; }
 
         [JsonProperty("err"), JsonOptionalProperty]
-        internal string Error { get; set; }
+        public string Error { get; set; }
     }
 
     public class BitMaxSocketChannelResponse<T>
     {
         [JsonProperty("m")]
-        internal string Method { get; set; }
+        public string Method { get; set; }
 
         [JsonProperty("symbol")]
-        internal string Symbol { get; set; }
+        public string Symbol { get; set; }
 
         [JsonProperty("data")]
-        internal T Data { get; set; }
+        public T Data { get; set; }
     }
 
     public class BitMaxSocketBarChannelResponse<T>
     {
         [JsonProperty("m")]
-        internal string Method { get; set; }
+        public string Method { get; set; }
 
         [JsonProperty("s")]
-        internal string Symbol { get; set; }
+        public string Symbol { get; set; }
 
         [JsonProperty("data")]
-        internal T Data { get; set; }
+        public T Data { get; set; }
     }
 
     public class BitMaxSocketAccountResponse<T>
     {
         [JsonProperty("m")]
-        internal string Method { get; set; }
+        public string Method { get; set; }
 
         [JsonProperty("accountId")]
-        internal string AccountId { get; set; }
+        public string AccountId { get; set; }
 
         [JsonProperty("ac"), JsonConverter(typeof(AccountTypeConverter))]
         public BitMaxAccountType AccountType { get; set; }
 
         [JsonProperty("data")]
-        internal T Data { get; set; }
+        public T Data { get; set; }
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace BitMax.Net.Converters
 {
-    internal class TransactionTypeConverter : BaseConverter<BitMaxTransactionType>
+    public class TransactionTypeConverter : BaseConverter<BitMaxTransactionType>
     {
         public TransactionTypeConverter() : this(true) { }
         public TransactionTypeConverter(bool quotes) : base(quotes) { }

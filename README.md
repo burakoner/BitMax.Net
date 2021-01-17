@@ -327,6 +327,23 @@ var sub05 = ws.SubscribeToSpotBalanceAndOrders((data) =>
         Console.WriteLine($"Order >> {data.Symbol} OT:{data.OrderType} P:{data.Price} SP:{data.StopPrice}");
     }
 });
+
+// Needs Authentication
+var sub06 = ws.SubscribeToMarginBalanceAndOrders((data) =>
+{
+    if (data != null)
+    {
+        Console.WriteLine($"Balance >> {data.Asset} AB:{data.AvailableBalance} TB:{data.TotalBalance}");
+    }
+}, (data) =>
+{
+    if (data != null)
+    {
+        Console.WriteLine($"Order >> {data.Symbol} OT:{data.OrderType} P:{data.Price} SP:{data.StopPrice}");
+    }
+});
+
+// Unsubscribe
 _ = ws.Unsubscribe(sub05.Data);
 ```
 
@@ -361,6 +378,10 @@ ws.SubscribeToFuturesOrders((data) =>
 ```
 
 ## Release Notes
+* Version 2.0.0 - 17 Jan 2021
+    * All methods are virtual now. You can customize methods by overriding.
+    * Fixed several minor bugs
+
 * Version 1.3.2 - 15 Jan 2021
     * Fixed some minor bugs
 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace BitMax.Net.Converters
 {
-    internal class OrderResponseInstructionConverter : BaseConverter<BitMaxOrderResponseInstruction>
+    public class OrderResponseInstructionConverter : BaseConverter<BitMaxOrderResponseInstruction>
     {
         public OrderResponseInstructionConverter() : this(true) { }
         public OrderResponseInstructionConverter(bool quotes) : base(quotes) { }

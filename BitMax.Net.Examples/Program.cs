@@ -4,7 +4,9 @@ using BitMax.Net.RestObjects;
 using CryptoExchange.Net.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Threading;
 
 namespace BitMax.Net.Examples
 {
@@ -169,6 +171,21 @@ namespace BitMax.Net.Examples
 
             // Needs Authentication
             var sub05 = ws.SubscribeToSpotBalanceAndOrders((data) =>
+            {
+                if (data != null)
+                {
+                    Console.WriteLine($"Balance >> {data.Asset} AB:{data.AvailableBalance} TB:{data.TotalBalance}");
+                }
+            }, (data) =>
+            {
+                if (data != null)
+                {
+                    Console.WriteLine($"Order >> {data.Symbol} OT:{data.OrderType} P:{data.Price} SP:{data.StopPrice}");
+                }
+            });
+            
+            // Needs Authentication
+            var sub06 = ws.SubscribeToMarginBalanceAndOrders((data) =>
             {
                 if (data != null)
                 {

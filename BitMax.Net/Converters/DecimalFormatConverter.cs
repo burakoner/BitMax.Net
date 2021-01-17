@@ -6,7 +6,7 @@ using System.Text;
 
 namespace BitMax.Net.Converters
 {
-    internal class DecimalFormatConverter : JsonConverter
+    public class DecimalFormatConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {

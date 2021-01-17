@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace BitMax.Net.Converters
 {
-    internal class OrderSideConverter : BaseConverter<BitMaxOrderSide>
+    public class OrderSideConverter : BaseConverter<BitMaxOrderSide>
     {
         public OrderSideConverter() : this(true) { }
         public OrderSideConverter(bool quotes) : base(quotes) { }

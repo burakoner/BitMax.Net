@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace BitMax.Net.Converters
 {
-    internal class AccountTypeConverter : BaseConverter<BitMaxAccountType>
+    public class AccountTypeConverter : BaseConverter<BitMaxAccountType>
     {
         public AccountTypeConverter() : this(true) { }
         public AccountTypeConverter(bool quotes) : base(quotes) { }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace BitMax.Net.Converters
 {
-    internal class ProductStatusConverter : BaseConverter<BitMaxProductStatus>
+    public class ProductStatusConverter : BaseConverter<BitMaxProductStatus>
     {
         public ProductStatusConverter() : this(true) { }
         public ProductStatusConverter(bool quotes) : base(quotes) { }

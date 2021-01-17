@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace BitMax.Net.Converters
 {
-    internal class PeriodConverter : BaseConverter<BitMaxPeriod>
+    public class PeriodConverter : BaseConverter<BitMaxPeriod>
     {
         public PeriodConverter() : this(true) { }
         public PeriodConverter(bool quotes) : base(quotes) { }

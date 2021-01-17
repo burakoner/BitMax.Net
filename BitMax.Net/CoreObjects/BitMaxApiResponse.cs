@@ -4,28 +4,28 @@ using Newtonsoft.Json;
 
 namespace BitMax.Net.CoreObjects
 {
-    internal class BitMaxResponse
+    public class BitMaxResponse
     {
         [JsonProperty("code")]
-        internal int ErrorCode { get; set; }
+        public int ErrorCode { get; set; }
 
         [JsonProperty("message", NullValueHandling = NullValueHandling.Ignore), JsonOptionalProperty]
-        internal string ErrorMessage { get; set; }
+        public string ErrorMessage { get; set; }
 
         [JsonProperty("reason", NullValueHandling = NullValueHandling.Ignore), JsonOptionalProperty]
-        internal string ErrorReason { get; set; }
+        public string ErrorReason { get; set; }
 
         [JsonProperty("info", NullValueHandling = NullValueHandling.Ignore), JsonOptionalProperty]
-        internal object ErrorInformation { get; set; }
+        public object ErrorInformation { get; set; }
     }
 
-    internal class BitMaxApiResponse<T>: BitMaxResponse
+    public class BitMaxApiResponse<T>: BitMaxResponse
     {
         [JsonProperty("data")]
         public T Data { get; set; }
     }
 
-    internal class BitMaxError : Error
+    public class BitMaxError : Error
     {
         public string Reason { get; set; }
         public string Information { get; set; }

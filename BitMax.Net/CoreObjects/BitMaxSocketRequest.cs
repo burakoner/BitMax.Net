@@ -8,7 +8,7 @@ using System.Text;
 
 namespace BitMax.Net.CoreObjects
 {
-    internal class BitMaxSocketPingRequest
+    public class BitMaxSocketPingRequest
     {
         [JsonProperty("id")]
         public string RequestId { get; set; }
@@ -28,8 +28,8 @@ namespace BitMax.Net.CoreObjects
             Operation = op;
         }
     }
-    
-    internal class BitMaxSocketAuthRequest
+
+    public class BitMaxSocketAuthRequest
     {
         [JsonProperty("id")]
         public string RequestId { get; set; }
@@ -69,7 +69,7 @@ namespace BitMax.Net.CoreObjects
         }
     }
 
-    internal class BitMaxSocketCashChannelRequest
+    public class BitMaxSocketCashChannelRequest
     {
         [JsonProperty("id")]
         public string RequestId { get; set; }
@@ -95,7 +95,7 @@ namespace BitMax.Net.CoreObjects
         }
     }
 
-    internal class BitMaxSocketCashQueryRequest
+    public class BitMaxSocketCashQueryRequest
     {
         [JsonProperty("id")]
         public string RequestId { get; set; }
@@ -121,13 +121,13 @@ namespace BitMax.Net.CoreObjects
         }
     }
 
-    internal enum BitMaxSocketCashChannelOperation
+    public enum BitMaxSocketCashChannelOperation
     {
         Subscribe,
         Unsubscribe,
     }
 
-    internal class SocketCashChannelOperationConverter : BaseConverter<BitMaxSocketCashChannelOperation>
+    public class SocketCashChannelOperationConverter : BaseConverter<BitMaxSocketCashChannelOperation>
     {
         public SocketCashChannelOperationConverter() : this(true) { }
         public SocketCashChannelOperationConverter(bool quotes) : base(quotes) { }
@@ -139,7 +139,7 @@ namespace BitMax.Net.CoreObjects
         };
     }
 
-    internal enum BitMaxSocketCashQueryAction
+    public enum BitMaxSocketCashQueryAction
     {
         PlaceOrder,
         CancelOrder,
@@ -152,7 +152,7 @@ namespace BitMax.Net.CoreObjects
         MarginRisk,
     }
 
-    internal class SocketCashQueryActionConverter : BaseConverter<BitMaxSocketCashQueryAction>
+    public class SocketCashQueryActionConverter : BaseConverter<BitMaxSocketCashQueryAction>
     {
         public SocketCashQueryActionConverter() : this(true) { }
         public SocketCashQueryActionConverter(bool quotes) : base(quotes) { }
@@ -171,13 +171,13 @@ namespace BitMax.Net.CoreObjects
         };
     }
 
-    internal enum BitMaxSocketCashQueryAccount
+    public enum BitMaxSocketCashQueryAccount
     {
         Spot,
         Margin,
     }
 
-    internal class SocketCashQueryAccountConverter : BaseConverter<BitMaxSocketCashQueryAccount>
+    public class SocketCashQueryAccountConverter : BaseConverter<BitMaxSocketCashQueryAccount>
     {
         public SocketCashQueryAccountConverter() : this(true) { }
         public SocketCashQueryAccountConverter(bool quotes) : base(quotes) { }

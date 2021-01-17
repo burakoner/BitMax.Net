@@ -20,11 +20,11 @@ namespace BitMax.Net
 {
     public partial class BitMaxSocketClient : SocketClient, ISocketClient, IBitMaxSocketClient
     {
-        public bool Authendicated { get; private set; }
+        public bool Authendicated { get; protected set; }
 
         #region Client Options
-        private static BitMaxSocketClientOptions defaultOptions = new BitMaxSocketClientOptions();
-        private static BitMaxSocketClientOptions DefaultOptions => defaultOptions.Copy();
+        protected static BitMaxSocketClientOptions defaultOptions = new BitMaxSocketClientOptions();
+        protected static BitMaxSocketClientOptions DefaultOptions => defaultOptions.Copy();
         #endregion
 
         #region Constructor/Destructor
@@ -63,7 +63,7 @@ namespace BitMax.Net
         /// <param name="symbol">Trading Symbol</param>
         /// <param name="onData">On Data Handler</param>
         /// <returns></returns>
-        public CallResult<UpdateSubscription> SubscribeToBestAskBidUpdates(string symbol, Action<BitMaxSocketBBO> onData) => SubscribeToBestAskBidUpdatesAsync(new List<string> { symbol }, onData).Result;
+        public virtual CallResult<UpdateSubscription> SubscribeToBestAskBidUpdates(string symbol, Action<BitMaxSocketBBO> onData) => SubscribeToBestAskBidUpdatesAsync(new List<string> { symbol }, onData).Result;
         /// <summary>
         /// You can subscribe to updates of best bid/offer data stream only. Once subscribed, you will receive BBO message whenever the price and/or size changes at the top of the order book.
         /// Each BBO message contains price and size data for exactly one bid level and one ask level.
@@ -71,7 +71,7 @@ namespace BitMax.Net
         /// <param name="symbols">Trading Symbols List</param>
         /// <param name="onData">On Data Handler</param>
         /// <returns></returns>
-        public CallResult<UpdateSubscription> SubscribeToBestAskBidUpdates(IEnumerable<string> symbols, Action<BitMaxSocketBBO> onData) => SubscribeToBestAskBidUpdatesAsync(symbols, onData).Result;
+        public virtual CallResult<UpdateSubscription> SubscribeToBestAskBidUpdates(IEnumerable<string> symbols, Action<BitMaxSocketBBO> onData) => SubscribeToBestAskBidUpdatesAsync(symbols, onData).Result;
         /// <summary>
         /// You can subscribe to updates of best bid/offer data stream only. Once subscribed, you will receive BBO message whenever the price and/or size changes at the top of the order book.
         /// Each BBO message contains price and size data for exactly one bid level and one ask level.
@@ -79,7 +79,7 @@ namespace BitMax.Net
         /// <param name="symbols">Trading Symbols List</param>
         /// <param name="onData">On Data Handler</param>
         /// <returns></returns>
-        public async Task<CallResult<UpdateSubscription>> SubscribeToBestAskBidUpdatesAsync(IEnumerable<string> symbols, Action<BitMaxSocketBBO> onData)
+        public virtual async Task<CallResult<UpdateSubscription>> SubscribeToBestAskBidUpdatesAsync(IEnumerable<string> symbols, Action<BitMaxSocketBBO> onData)
         {
             var internalHandler = new Action<BitMaxSocketChannelResponse<BitMaxSocketBBO>>(data =>
             {
@@ -101,7 +101,7 @@ namespace BitMax.Net
         /// <param name="symbol">Trading Symbol</param>
         /// <param name="onData">On Data Handler</param>
         /// <returns></returns>
-        public CallResult<UpdateSubscription> SubscribeToOrderBookUpdates(string symbol, Action<BitMaxSocketOrderBook> onData) => SubscribeToOrderBookUpdatesAsync(new List<string> { symbol }, onData).Result;
+        public virtual CallResult<UpdateSubscription> SubscribeToOrderBookUpdates(string symbol, Action<BitMaxSocketOrderBook> onData) => SubscribeToOrderBookUpdatesAsync(new List<string> { symbol }, onData).Result;
         /// <summary>
         /// If you want to keep track of the most recent order book snapshot in its entirety, the most efficient way is to subscribe to the depth channel.
         /// Each depth message contains a bids list and an asks list in its data field. Each list contains a series of [price, size] pairs that you can use to update the order book snapshot. In the message, price is always positive and size is always non-negative.
@@ -112,7 +112,7 @@ namespace BitMax.Net
         /// <param name="symbols">Trading Symbols List</param>
         /// <param name="onData">On Data Handler</param>
         /// <returns></returns>
-        public CallResult<UpdateSubscription> SubscribeToOrderBookUpdates(IEnumerable<string> symbols, Action<BitMaxSocketOrderBook> onData) => SubscribeToOrderBookUpdatesAsync(symbols, onData).Result;
+        public virtual CallResult<UpdateSubscription> SubscribeToOrderBookUpdates(IEnumerable<string> symbols, Action<BitMaxSocketOrderBook> onData) => SubscribeToOrderBookUpdatesAsync(symbols, onData).Result;
         /// <summary>
         /// If you want to keep track of the most recent order book snapshot in its entirety, the most efficient way is to subscribe to the depth channel.
         /// Each depth message contains a bids list and an asks list in its data field. Each list contains a series of [price, size] pairs that you can use to update the order book snapshot. In the message, price is always positive and size is always non-negative.
@@ -123,7 +123,7 @@ namespace BitMax.Net
         /// <param name="symbols">Trading Symbols List</param>
         /// <param name="onData">On Data Handler</param>
         /// <returns></returns>
-        public async Task<CallResult<UpdateSubscription>> SubscribeToOrderBookUpdatesAsync(IEnumerable<string> symbols, Action<BitMaxSocketOrderBook> onData)
+        public virtual async Task<CallResult<UpdateSubscription>> SubscribeToOrderBookUpdatesAsync(IEnumerable<string> symbols, Action<BitMaxSocketOrderBook> onData)
         {
             var internalHandler = new Action<BitMaxSocketChannelResponse<BitMaxSocketOrderBook>>(data =>
             {
@@ -141,21 +141,21 @@ namespace BitMax.Net
         /// <param name="symbol">Trading Symbol</param>
         /// <param name="onData">On Data Handler</param>
         /// <returns></returns>
-        public CallResult<UpdateSubscription> SubscribeToTrades(string symbol, Action<BitMaxSocketTrade> onData) => SubscribeToTradesAsync(new List<string> { symbol }, onData).Result;
+        public virtual CallResult<UpdateSubscription> SubscribeToTrades(string symbol, Action<BitMaxSocketTrade> onData) => SubscribeToTradesAsync(new List<string> { symbol }, onData).Result;
         /// <summary>
         /// The data field is a list containing one or more trade objects. The server may combine consecutive trades with the same price and bm value into one aggregated item. Each trade object contains the following fields:
         /// </summary>
         /// <param name="symbols">Trading Symbols List</param>
         /// <param name="onData">On Data Handler</param>
         /// <returns></returns>
-        public CallResult<UpdateSubscription> SubscribeToTrades(IEnumerable<string> symbols, Action<BitMaxSocketTrade> onData) => SubscribeToTradesAsync(symbols, onData).Result;
+        public virtual CallResult<UpdateSubscription> SubscribeToTrades(IEnumerable<string> symbols, Action<BitMaxSocketTrade> onData) => SubscribeToTradesAsync(symbols, onData).Result;
         /// <summary>
         /// The data field is a list containing one or more trade objects. The server may combine consecutive trades with the same price and bm value into one aggregated item. Each trade object contains the following fields:
         /// </summary>
         /// <param name="symbols">Trading Symbols List</param>
         /// <param name="onData">On Data Handler</param>
         /// <returns></returns>
-        public async Task<CallResult<UpdateSubscription>> SubscribeToTradesAsync(IEnumerable<string> symbols, Action<BitMaxSocketTrade> onData)
+        public virtual async Task<CallResult<UpdateSubscription>> SubscribeToTradesAsync(IEnumerable<string> symbols, Action<BitMaxSocketTrade> onData)
         {
             var internalHandler = new Action<BitMaxSocketChannelResponse<IEnumerable<BitMaxSocketTrade>>>(data =>
             {
@@ -177,7 +177,7 @@ namespace BitMax.Net
         /// <param name="period">Candle Period</param>
         /// <param name="onData">On Data Handler</param>
         /// <returns></returns>
-        public CallResult<UpdateSubscription> SubscribeToCandles(string symbol, BitMaxPeriod period, Action<BitMaxSocketCandle> onData) => SubscribeToCandlesAsync(new List<string> { symbol }, period, onData).Result;
+        public virtual CallResult<UpdateSubscription> SubscribeToCandles(string symbol, BitMaxPeriod period, Action<BitMaxSocketCandle> onData) => SubscribeToCandlesAsync(new List<string> { symbol }, period, onData).Result;
         /// <summary>
         /// The data field is a list containing one or more trade objects. The server may combine consecutive trades with the same price and bm value into one aggregated item. Each trade object contains the following fields:
         /// </summary>
@@ -185,7 +185,7 @@ namespace BitMax.Net
         /// <param name="period">Candle Period</param>
         /// <param name="onData">On Data Handler</param>
         /// <returns></returns>
-        public CallResult<UpdateSubscription> SubscribeToCandles(IEnumerable<string> symbols, BitMaxPeriod period, Action<BitMaxSocketCandle> onData) => SubscribeToCandlesAsync(symbols, period, onData).Result;
+        public virtual CallResult<UpdateSubscription> SubscribeToCandles(IEnumerable<string> symbols, BitMaxPeriod period, Action<BitMaxSocketCandle> onData) => SubscribeToCandlesAsync(symbols, period, onData).Result;
         /// <summary>
         /// The data field is a list containing one or more trade objects. The server may combine consecutive trades with the same price and bm value into one aggregated item. Each trade object contains the following fields:
         /// </summary>
@@ -193,7 +193,7 @@ namespace BitMax.Net
         /// <param name="period">Candle Period</param>
         /// <param name="onData">On Data Handler</param>
         /// <returns></returns>
-        public async Task<CallResult<UpdateSubscription>> SubscribeToCandlesAsync(IEnumerable<string> symbols, BitMaxPeriod period, Action<BitMaxSocketCandle> onData)
+        public virtual async Task<CallResult<UpdateSubscription>> SubscribeToCandlesAsync(IEnumerable<string> symbols, BitMaxPeriod period, Action<BitMaxSocketCandle> onData)
         {
             var internalHandler = new Action<BitMaxSocketBarChannelResponse<BitMaxSocketCandle>>(data =>
             {
@@ -217,7 +217,7 @@ namespace BitMax.Net
         /// <param name="onSpotBalanceData">On Data Handler</param>
         /// <param name="onOrderData">On Data Handler</param>
         /// <returns></returns>
-        public CallResult<UpdateSubscription> SubscribeToSpotBalanceAndOrders(Action<BitMaxSocketSpotBalanceExt> onSpotBalanceData, Action<BitMaxSocketCashOrderExt> onOrderData) => SubscribeToBalanceAndOrdersAsync(BitMaxAccountType.Spot, onSpotBalanceData, null, onOrderData).Result;
+        public virtual CallResult<UpdateSubscription> SubscribeToSpotBalanceAndOrders(Action<BitMaxSocketSpotBalanceExt> onSpotBalanceData, Action<BitMaxSocketCashOrderExt> onOrderData) => SubscribeToBalanceAndOrdersAsync(BitMaxAccountType.Spot, onSpotBalanceData, null, onOrderData).Result;
         /// <summary>
         /// Note: once you subscribe to the order channel, you will start receiving messages from the balance channel automatically. If you unsubscribe from the order channel, you will simultaneously unsubscribe from the balance channel.
         /// You need to specify the account when subscribing to the order channel. You could specify account category cash, margin, or specific account id.
@@ -229,7 +229,7 @@ namespace BitMax.Net
         /// <param name="onMarginBalanceData">On Data Handler</param>
         /// <param name="onOrderData">On Data Handler</param>
         /// <returns></returns>
-        public CallResult<UpdateSubscription> SubscribeToMarginBalanceAndOrders(Action<BitMaxSocketMarginBalanceExt> onMarginBalanceData, Action<BitMaxSocketCashOrderExt> onOrderData) => SubscribeToBalanceAndOrdersAsync(BitMaxAccountType.Margin, null, onMarginBalanceData, onOrderData).Result;
+        public virtual CallResult<UpdateSubscription> SubscribeToMarginBalanceAndOrders(Action<BitMaxSocketMarginBalanceExt> onMarginBalanceData, Action<BitMaxSocketCashOrderExt> onOrderData) => SubscribeToBalanceAndOrdersAsync(BitMaxAccountType.Margin, null, onMarginBalanceData, onOrderData).Result;
         /// <summary>
         /// Note: once you subscribe to the order channel, you will start receiving messages from the balance channel automatically. If you unsubscribe from the order channel, you will simultaneously unsubscribe from the balance channel.
         /// You need to specify the account when subscribing to the order channel. You could specify account category cash, margin, or specific account id.
@@ -241,7 +241,7 @@ namespace BitMax.Net
         /// <param name="onSpotBalanceData">On Data Handler</param>
         /// <param name="onOrderData">On Data Handler</param>
         /// <returns></returns>
-        public async Task<CallResult<UpdateSubscription>> SubscribeToSpotBalanceAndOrdersAsync(Action<BitMaxSocketSpotBalanceExt> onSpotBalanceData, Action<BitMaxSocketCashOrderExt> onOrderData) => await SubscribeToBalanceAndOrdersAsync(BitMaxAccountType.Spot, onSpotBalanceData, null, onOrderData);
+        public virtual async Task<CallResult<UpdateSubscription>> SubscribeToSpotBalanceAndOrdersAsync(Action<BitMaxSocketSpotBalanceExt> onSpotBalanceData, Action<BitMaxSocketCashOrderExt> onOrderData) => await SubscribeToBalanceAndOrdersAsync(BitMaxAccountType.Spot, onSpotBalanceData, null, onOrderData);
         /// <summary>
         /// Note: once you subscribe to the order channel, you will start receiving messages from the balance channel automatically. If you unsubscribe from the order channel, you will simultaneously unsubscribe from the balance channel.
         /// You need to specify the account when subscribing to the order channel. You could specify account category cash, margin, or specific account id.
@@ -253,7 +253,7 @@ namespace BitMax.Net
         /// <param name="onMarginBalanceData">On Data Handler</param>
         /// <param name="onOrderData">On Data Handler</param>
         /// <returns></returns>
-        public async Task<CallResult<UpdateSubscription>> SubscribeToMarginBalanceAndOrdersAsync(Action<BitMaxSocketMarginBalanceExt> onMarginBalanceData, Action<BitMaxSocketCashOrderExt> onOrderData) => await SubscribeToBalanceAndOrdersAsync(BitMaxAccountType.Margin, null, onMarginBalanceData, onOrderData);
+        public virtual async Task<CallResult<UpdateSubscription>> SubscribeToMarginBalanceAndOrdersAsync(Action<BitMaxSocketMarginBalanceExt> onMarginBalanceData, Action<BitMaxSocketCashOrderExt> onOrderData) => await SubscribeToBalanceAndOrdersAsync(BitMaxAccountType.Margin, null, onMarginBalanceData, onOrderData);
         /// <summary>
         /// Note: once you subscribe to the order channel, you will start receiving messages from the balance channel automatically. If you unsubscribe from the order channel, you will simultaneously unsubscribe from the balance channel.
         /// You need to specify the account when subscribing to the order channel. You could specify account category cash, margin, or specific account id.
@@ -267,7 +267,7 @@ namespace BitMax.Net
         /// <param name="onMarginBalanceData">On Data Handler</param>
         /// <param name="onCashOrderData">On Data Handler</param>
         /// <returns></returns>
-        private async Task<CallResult<UpdateSubscription>> SubscribeToBalanceAndOrdersAsync(BitMaxAccountType cashAccountType, Action<BitMaxSocketSpotBalanceExt> onSpotBalanceData, Action<BitMaxSocketMarginBalanceExt> onMarginBalanceData, Action<BitMaxSocketCashOrderExt> onCashOrderData)
+        protected virtual async Task<CallResult<UpdateSubscription>> SubscribeToBalanceAndOrdersAsync(BitMaxAccountType cashAccountType, Action<BitMaxSocketSpotBalanceExt> onSpotBalanceData, Action<BitMaxSocketMarginBalanceExt> onMarginBalanceData, Action<BitMaxSocketCashOrderExt> onCashOrderData)
         {
             var internalHandler = new Action<BitMaxSocketAccountResponse<object>>(data =>
             {
@@ -305,9 +305,9 @@ namespace BitMax.Net
             return await Subscribe(request, "order", true, internalHandler).ConfigureAwait(false);
         }
 
-        public CallResult<UpdateSubscription> SubscribeToFuturesMarketData(string symbol, Action<BitMaxSocketFuturesMarketData> onData) => SubscribeToFuturesMarketDataAsync(new List<string> { symbol }, onData).Result;
-        public CallResult<UpdateSubscription> SubscribeToFuturesMarketData(IEnumerable<string> symbols, Action<BitMaxSocketFuturesMarketData> onData) => SubscribeToFuturesMarketDataAsync(symbols, onData).Result;
-        public async Task<CallResult<UpdateSubscription>> SubscribeToFuturesMarketDataAsync(IEnumerable<string> symbols, Action<BitMaxSocketFuturesMarketData> onData)
+        public virtual CallResult<UpdateSubscription> SubscribeToFuturesMarketData(string symbol, Action<BitMaxSocketFuturesMarketData> onData) => SubscribeToFuturesMarketDataAsync(new List<string> { symbol }, onData).Result;
+        public virtual CallResult<UpdateSubscription> SubscribeToFuturesMarketData(IEnumerable<string> symbols, Action<BitMaxSocketFuturesMarketData> onData) => SubscribeToFuturesMarketDataAsync(symbols, onData).Result;
+        public virtual async Task<CallResult<UpdateSubscription>> SubscribeToFuturesMarketDataAsync(IEnumerable<string> symbols, Action<BitMaxSocketFuturesMarketData> onData)
         {
             var internalHandler = new Action<BitMaxSocketBarChannelResponse<BitMaxSocketFuturesMarketData>>(data =>
             {
@@ -319,8 +319,8 @@ namespace BitMax.Net
             return await Subscribe(request, "futures-market-data", false, internalHandler).ConfigureAwait(false);
         }
 
-        public CallResult<UpdateSubscription> SubscribeToFuturesOrders(Action<BitMaxSocketFuturesOrderExt> onOrderData) =>  SubscribeToFuturesOrdersAsync(onOrderData).Result;
-        public async Task<CallResult<UpdateSubscription>> SubscribeToFuturesOrdersAsync(Action<BitMaxSocketFuturesOrderExt> onOrderData)
+        public virtual CallResult<UpdateSubscription> SubscribeToFuturesOrders(Action<BitMaxSocketFuturesOrderExt> onOrderData) => SubscribeToFuturesOrdersAsync(onOrderData).Result;
+        public virtual async Task<CallResult<UpdateSubscription>> SubscribeToFuturesOrdersAsync(Action<BitMaxSocketFuturesOrderExt> onOrderData)
         {
             var internalHandler = new Action<BitMaxSocketAccountResponse<object>>(data =>
             {
@@ -341,18 +341,16 @@ namespace BitMax.Net
             return await Subscribe(request, "order:futures", true, internalHandler).ConfigureAwait(false);
         }
 
-
-
         /// <summary>
         /// Login Method
         /// </summary>
         /// <returns></returns>
-        public CallResult<bool> Login() => LoginAsync().Result;
+        public virtual CallResult<bool> Login() => LoginAsync().Result;
         /// <summary>
         /// Login Method
         /// </summary>
         /// <returns></returns>
-        public async Task<CallResult<bool>> LoginAsync()
+        public virtual async Task<CallResult<bool>> LoginAsync()
         {
             if (authProvider == null)
                 return new CallResult<bool>(false, new NoApiCredentialsError());
@@ -373,14 +371,14 @@ namespace BitMax.Net
         }
 
         #region Private Core Methods
-        private void PingHandler(SocketConnection connection, JToken data)
+        protected virtual void PingHandler(SocketConnection connection, JToken data)
         {
             if (data["m"] != null && (string)data["m"] == "ping")
                 connection.Send(new BitMaxSocketPingRequest(NextRequestId()));
         }
 
-        private long iterator = 0;
-        private long NextRequestId()
+        protected long iterator = 0;
+        protected virtual long NextRequestId()
         {
             return ++iterator;
         }
@@ -389,10 +387,14 @@ namespace BitMax.Net
         #region Override Methods
         protected override SocketConnection GetWebsocket(string address, bool authenticated)
         {
+            return this.BitMaxGetWebsocket(address, authenticated);
+        }
+        protected virtual SocketConnection BitMaxGetWebsocket(string address, bool authenticated)
+        {
             address = address.TrimEnd('/');
-            var socketResult = sockets.Where(s => 
-                s.Value.Socket.Url.TrimEnd('/') == address.TrimEnd('/') && 
-                (s.Value.Authenticated == authenticated || !authenticated) && 
+            var socketResult = sockets.Where(s =>
+                s.Value.Socket.Url.TrimEnd('/') == address.TrimEnd('/') &&
+                (s.Value.Authenticated == authenticated || !authenticated) &&
                 s.Value.Connected).OrderBy(s => s.Value.HandlerCount).FirstOrDefault();
             var result = socketResult.Equals(default(KeyValuePair<int, SocketConnection>)) ? null : socketResult.Value;
             if (result != null)
@@ -418,6 +420,10 @@ namespace BitMax.Net
 
         protected override bool HandleQueryResponse<T>(SocketConnection s, object request, JToken data, out CallResult<T> callResult)
         {
+            return this.BitMaxHandleQueryResponse<T>(s, request, data, out callResult);
+        }
+        protected virtual bool BitMaxHandleQueryResponse<T>(SocketConnection s, object request, JToken data, out CallResult<T> callResult)
+        {
             callResult = new CallResult<T>(default, null);
 
             if (data["m"] != null && (string)data["m"] == "auth" && data["id"] != null)
@@ -441,6 +447,10 @@ namespace BitMax.Net
         }
 
         protected override bool HandleSubscriptionResponse(SocketConnection s, SocketSubscription subscription, object request, JToken message, out CallResult<object> callResult)
+        {
+            return this.BitMaxHandleSubscriptionResponse(s, subscription, request, message, out callResult);
+        }
+        protected virtual bool BitMaxHandleSubscriptionResponse(SocketConnection s, SocketSubscription subscription, object request, JToken message, out CallResult<object> callResult)
         {
             callResult = null;
 
@@ -479,6 +489,10 @@ namespace BitMax.Net
         }
 
         protected override bool MessageMatchesHandler(JToken message, object request)
+        {
+            return this.BitMaxMessageMatchesHandler(message, request);
+        }
+        protected virtual bool BitMaxMessageMatchesHandler(JToken message, object request)
         {
             if (request is BitMaxSocketCashChannelRequest req)
             {
@@ -527,6 +541,10 @@ namespace BitMax.Net
 
         protected override bool MessageMatchesHandler(JToken message, string identifier)
         {
+            return this.BitMaxMessageMatchesHandler(message, identifier);
+        }
+        protected virtual bool BitMaxMessageMatchesHandler(JToken message, string identifier)
+        {
             if ((string)message["m"] == "connected")
                 return true;
 
@@ -540,6 +558,10 @@ namespace BitMax.Net
         }
 
         protected override async Task<CallResult<bool>> AuthenticateSocket(SocketConnection s)
+        {
+            return await this.BitMaxAuthenticateSocket(s);
+        }
+        protected virtual async Task<CallResult<bool>> BitMaxAuthenticateSocket(SocketConnection s)
         {
             if (authProvider == null)
                 return new CallResult<bool>(false, new NoApiCredentialsError());
@@ -579,6 +601,10 @@ namespace BitMax.Net
         }
 
         protected override async Task<bool> Unsubscribe(SocketConnection connection, SocketSubscription s)
+        {
+            return await this.BitMaxUnsubscribe(connection, s);
+        }
+        protected virtual async Task<bool> BitMaxUnsubscribe(SocketConnection connection, SocketSubscription s)
         {
             if (s == null || s.Request == null)
                 return false;

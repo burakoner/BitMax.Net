@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace BitMax.Net.Converters
 {
-    internal class FuturesOrderTypeConverter : BaseConverter<BitMaxFuturesOrderType>
+    public class FuturesOrderTypeConverter : BaseConverter<BitMaxFuturesOrderType>
     {
         public FuturesOrderTypeConverter() : this(true) { }
         public FuturesOrderTypeConverter(bool quotes) : base(quotes) { }

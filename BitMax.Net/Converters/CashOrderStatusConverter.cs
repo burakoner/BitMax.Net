@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace BitMax.Net.Converters
 {
-    internal class CashOrderStatusConverter : BaseConverter<BitMaxCashOrderStatus>
+    public class CashOrderStatusConverter : BaseConverter<BitMaxCashOrderStatus>
     {
         public CashOrderStatusConverter() : this(true) { }
         public CashOrderStatusConverter(bool quotes) : base(quotes) { }
