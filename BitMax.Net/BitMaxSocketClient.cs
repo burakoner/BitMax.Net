@@ -57,6 +57,38 @@ namespace BitMax.Net
         #endregion
 
         /// <summary>
+        /// Subscribe to summary (ticker) data
+        /// </summary>
+        /// <param name="symbol">Trading Symbol</param>
+        /// <param name="onData">On Data Handler</param>
+        /// <returns></returns>
+        public virtual CallResult<UpdateSubscription> SubscribeToSummary(string symbol, Action<BitMaxSocketSummary> onData) => SubscribeToSummaryAsync(new List<string> { symbol }, onData).Result;
+        /// <summary>
+        /// Subscribe to summary (ticker) data
+        /// </summary>
+        /// <param name="symbols">Trading Symbols</param>
+        /// <param name="onData">On Data Handler</param>
+        /// <returns></returns>
+        public virtual CallResult<UpdateSubscription> SubscribeToSummary(IEnumerable<string> symbols, Action<BitMaxSocketSummary> onData) => SubscribeToSummaryAsync(symbols, onData).Result;
+        /// <summary>
+        /// Subscribe to summary (ticker) data
+        /// </summary>
+        /// <param name="symbols">Trading Symbols</param>
+        /// <param name="onData">On Data Handler</param>
+        /// <returns></returns>
+        public virtual async Task<CallResult<UpdateSubscription>> SubscribeToSummaryAsync(IEnumerable<string> symbols, Action<BitMaxSocketSummary> onData)
+        {
+            var internalHandler = new Action<BitMaxSocketBarChannelResponse<BitMaxSocketSummary>>(data =>
+            {
+                data.Data.Symbol = data.Symbol;
+                onData(data.Data);
+            });
+
+            var request = new BitMaxSocketCashChannelRequest(NextRequestId(), BitMaxSocketCashChannelOperation.Subscribe, "summary:" + string.Join(",", symbols));
+            return await Subscribe(request, "summary", false, internalHandler).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// You can subscribe to updates of best bid/offer data stream only. Once subscribed, you will receive BBO message whenever the price and/or size changes at the top of the order book.
         /// Each BBO message contains price and size data for exactly one bid level and one ask level.
         /// </summary>
@@ -523,6 +555,8 @@ namespace BitMax.Net
                     else if (message["symbol"] != null) symbol = (string)message["symbol"];
 
                     /* Public */
+                    if (m == "summary" && req.Channel.StartsWith("summary") && req.Channel.Contains(symbol))
+                        return true;
                     if (m == "bbo" && req.Channel.StartsWith("bbo") && req.Channel.Contains(symbol))
                         return true;
                     if (m == "depth" && req.Channel.StartsWith("depth") && req.Channel.Contains(symbol))

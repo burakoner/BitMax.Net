@@ -137,7 +137,15 @@ namespace BitMax.Net.Examples
             var ws = new BitMaxSocketClient(new BitMaxSocketClientOptions(account_info.Data.AccountGroup, credentials ));
             var auth = ws.Login();
 
-            var sub01 = ws.SubscribeToBestAskBidUpdates(new List<string> { "BTC/USDT", "ETH/USDT" }, (data) =>
+            var sub01 = ws.SubscribeToSummary(new List<string> { "BTC/USDT", "ETH/USDT" }, (data) =>
+            {
+                if (data != null)
+                {
+                    Console.WriteLine($"Summary >> {data.Symbol} T:{data.Timestamp} O:{data.Open} H:{data.High} L:{data.Low} C:{data.Close} V:{data.Volume}");
+                }
+            });
+
+            var sub02 = ws.SubscribeToBestAskBidUpdates(new List<string> { "BTC/USDT", "ETH/USDT" }, (data) =>
             {
                 if (data != null)
                 {
@@ -145,7 +153,7 @@ namespace BitMax.Net.Examples
                 }
             });
 
-            var sub02 = ws.SubscribeToOrderBookUpdates(new List<string> { "BTC/USDT", "ETH/USDT" }, (data) =>
+            var sub03 = ws.SubscribeToOrderBookUpdates(new List<string> { "BTC/USDT", "ETH/USDT" }, (data) =>
             {
                 if (data != null)
                 {
@@ -153,7 +161,7 @@ namespace BitMax.Net.Examples
                 }
             });
 
-            var sub03 = ws.SubscribeToTrades(new List<string> { "BTC/USDT", "ETH/USDT" }, (data) =>
+            var sub04 = ws.SubscribeToTrades(new List<string> { "BTC/USDT", "ETH/USDT" }, (data) =>
             {
                 if (data != null)
                 {
@@ -161,7 +169,7 @@ namespace BitMax.Net.Examples
                 }
             });
 
-            var sub04 = ws.SubscribeToCandles(new List<string> { "BTC/USDT", "ETH/USDT" }, BitMaxPeriod.OneHour, (data) =>
+            var sub05 = ws.SubscribeToCandles(new List<string> { "BTC/USDT", "ETH/USDT" }, BitMaxPeriod.OneHour, (data) =>
             {
                 if (data != null)
                 {
@@ -170,7 +178,7 @@ namespace BitMax.Net.Examples
             });
 
             // Needs Authentication
-            var sub05 = ws.SubscribeToSpotBalanceAndOrders((data) =>
+            var sub06 = ws.SubscribeToSpotBalanceAndOrders((data) =>
             {
                 if (data != null)
                 {
@@ -185,7 +193,7 @@ namespace BitMax.Net.Examples
             });
             
             // Needs Authentication
-            var sub06 = ws.SubscribeToMarginBalanceAndOrders((data) =>
+            var sub07 = ws.SubscribeToMarginBalanceAndOrders((data) =>
             {
                 if (data != null)
                 {

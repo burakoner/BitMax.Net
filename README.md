@@ -271,7 +271,15 @@ The BitMax.Net socket client provides several socket endpoint to which can be su
 ```C#
 var ws = new BitMaxSocketClient();
 
-var sub01 = ws.SubscribeToBestAskBidUpdates(new List<string> { "BTC/USDT", "ETH/USDT" }, (data) =>
+var sub01 = ws.SubscribeToSummary(new List<string> { "BTC/USDT", "ETH/USDT" }, (data) =>
+{
+    if (data != null)
+    {
+        Console.WriteLine($"Summary >> {data.Symbol} T:{data.Timestamp} O:{data.Open} H:{data.High} L:{data.Low} C:{data.Close} V:{data.Volume}");
+    }
+});
+
+var sub02 = ws.SubscribeToBestAskBidUpdates(new List<string> { "BTC/USDT", "ETH/USDT" }, (data) =>
 {
     if (data != null)
     {
@@ -279,7 +287,7 @@ var sub01 = ws.SubscribeToBestAskBidUpdates(new List<string> { "BTC/USDT", "ETH/
     }
 });
 
-var sub02 = ws.SubscribeToOrderBookUpdates(new List<string> { "BTC/USDT", "ETH/USDT" }, (data) =>
+var sub03 = ws.SubscribeToOrderBookUpdates(new List<string> { "BTC/USDT", "ETH/USDT" }, (data) =>
 {
     if (data != null)
     {
@@ -287,7 +295,7 @@ var sub02 = ws.SubscribeToOrderBookUpdates(new List<string> { "BTC/USDT", "ETH/U
     }
 });
 
-var sub03 = ws.SubscribeToTrades(new List<string> { "BTC/USDT", "ETH/USDT" }, (data) =>
+var sub04 = ws.SubscribeToTrades(new List<string> { "BTC/USDT", "ETH/USDT" }, (data) =>
 {
     if (data != null)
     {
@@ -295,7 +303,7 @@ var sub03 = ws.SubscribeToTrades(new List<string> { "BTC/USDT", "ETH/USDT" }, (d
     }
 });
 
-var sub04 = ws.SubscribeToCandles(new List<string> { "BTC/USDT", "ETH/USDT" }, BitMaxPeriod.OneHour, (data) =>
+var sub05 = ws.SubscribeToCandles(new List<string> { "BTC/USDT", "ETH/USDT" }, BitMaxPeriod.OneHour, (data) =>
 {
     if (data != null)
     {
@@ -303,7 +311,38 @@ var sub04 = ws.SubscribeToCandles(new List<string> { "BTC/USDT", "ETH/USDT" }, B
     }
 });
 
-_ = ws.Unsubscribe(sub04.Data);
+// Needs Authentication
+var sub06 = ws.SubscribeToSpotBalanceAndOrders((data) =>
+{
+    if (data != null)
+    {
+        Console.WriteLine($"Balance >> {data.Asset} AB:{data.AvailableBalance} TB:{data.TotalBalance}");
+    }
+}, (data) =>
+{
+    if (data != null)
+    {
+        Console.WriteLine($"Order >> {data.Symbol} OT:{data.OrderType} P:{data.Price} SP:{data.StopPrice}");
+    }
+});
+            
+// Needs Authentication
+var sub07 = ws.SubscribeToMarginBalanceAndOrders((data) =>
+{
+    if (data != null)
+    {
+        Console.WriteLine($"Balance >> {data.Asset} AB:{data.AvailableBalance} TB:{data.TotalBalance}");
+    }
+}, (data) =>
+{
+    if (data != null)
+    {
+        Console.WriteLine($"Order >> {data.Symbol} OT:{data.OrderType} P:{data.Price} SP:{data.StopPrice}");
+    }
+});
+
+// Unsubscribe
+_ = ws.Unsubscribe(sub05.Data);
 ```
 
 **Cash (Spot) / Margin » Private Feeds**
@@ -378,6 +417,9 @@ ws.SubscribeToFuturesOrders((data) =>
 ```
 
 ## Release Notes
+* Version 2.0.2 - 11 Feb 2021
+    * Added SubscribeToSummary method to BitMaxSocketClient
+
 * Version 2.0.1 - 01 Feb 2021
     * Updated CryptoExchange.Net to 3.6.0
 
