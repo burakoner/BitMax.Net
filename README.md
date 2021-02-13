@@ -271,7 +271,7 @@ The BitMax.Net socket client provides several socket endpoint to which can be su
 ```C#
 var ws = new BitMaxSocketClient();
 
-var sub01 = ws.SubscribeToSummary(new List<string> { "BTC/USDT", "ETH/USDT" }, (data) =>
+var sub01 = ws.SubscribeToSummary("*", (data) =>
 {
     if (data != null)
     {

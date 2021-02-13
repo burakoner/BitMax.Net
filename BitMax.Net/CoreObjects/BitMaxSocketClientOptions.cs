@@ -8,7 +8,7 @@ namespace BitMax.Net.CoreObjects
     /// </summary>
     public class BitMaxSocketClientOptions : SocketClientOptions
     {
-        private int AccountGroup = 1;
+        public int AccountGroup = 1;
 
         public BitMaxSocketClientOptions(): base("wss://bitmax.io/1/api/pro/v1/stream")
         {

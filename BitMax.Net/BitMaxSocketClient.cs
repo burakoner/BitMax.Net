@@ -555,7 +555,7 @@ namespace BitMax.Net
                     else if (message["symbol"] != null) symbol = (string)message["symbol"];
 
                     /* Public */
-                    if (m == "summary" && req.Channel.StartsWith("summary") && req.Channel.Contains(symbol))
+                    if (m == "summary" && req.Channel.StartsWith("summary"))
                         return true;
                     if (m == "bbo" && req.Channel.StartsWith("bbo") && req.Channel.Contains(symbol))
                         return true;
