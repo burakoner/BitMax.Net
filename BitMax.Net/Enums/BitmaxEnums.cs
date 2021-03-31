@@ -84,6 +84,7 @@
     {
         GoodTillCanceled,
         ImmediateOrCancel,
+        FillOrKill,
     }
 
     public enum BitMaxFuturesOrderTimeInForce

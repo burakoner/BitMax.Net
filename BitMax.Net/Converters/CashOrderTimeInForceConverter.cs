@@ -13,6 +13,7 @@ namespace BitMax.Net.Converters
         {
             new KeyValuePair<BitMaxCashOrderTimeInForce, string>(BitMaxCashOrderTimeInForce.GoodTillCanceled, "GTC"),
             new KeyValuePair<BitMaxCashOrderTimeInForce, string>(BitMaxCashOrderTimeInForce.ImmediateOrCancel, "IOC"),
+            new KeyValuePair<BitMaxCashOrderTimeInForce, string>(BitMaxCashOrderTimeInForce.FillOrKill, "FOK"),
         };
     }
 }
