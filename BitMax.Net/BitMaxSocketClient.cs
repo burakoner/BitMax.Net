@@ -9,6 +9,7 @@ using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Logging;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Sockets;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -78,14 +79,15 @@ namespace BitMax.Net
         /// <returns></returns>
         public virtual async Task<CallResult<UpdateSubscription>> SubscribeToSummaryAsync(IEnumerable<string> symbols, Action<BitMaxSocketSummary> onData)
         {
-            var internalHandler = new Action<BitMaxSocketBarChannelResponse<BitMaxSocketSummary>>(data =>
+            var internalHandler = new Action<DataEvent<BitMaxSocketBarChannelResponse<BitMaxSocketSummary>>>(data =>
             {
-                data.Data.Symbol = data.Symbol;
-                onData(data.Data);
+                data.Data.Symbol = data.Data.Data.Symbol;
+                onData(data.Data.Data);
             });
 
             var request = new BitMaxSocketCashChannelRequest(NextRequestId(), BitMaxSocketCashChannelOperation.Subscribe, "summary:" + string.Join(",", symbols));
-            return await Subscribe(request, "summary", false, internalHandler).ConfigureAwait(false);
+            return await SubscribeAsync(request, "summary", false, internalHandler).ConfigureAwait(false);
+
         }
 
         /// <summary>
@@ -113,14 +115,14 @@ namespace BitMax.Net
         /// <returns></returns>
         public virtual async Task<CallResult<UpdateSubscription>> SubscribeToBestAskBidUpdatesAsync(IEnumerable<string> symbols, Action<BitMaxSocketBBO> onData)
         {
-            var internalHandler = new Action<BitMaxSocketChannelResponse<BitMaxSocketBBO>>(data =>
+            var internalHandler = new Action<DataEvent<BitMaxSocketChannelResponse<BitMaxSocketBBO>>>(data =>
             {
-                data.Data.Symbol = data.Symbol;
-                onData(data.Data);
+                data.Data.Symbol = data.Data.Data.Symbol;
+                onData(data.Data.Data);
             });
 
             var request = new BitMaxSocketCashChannelRequest(NextRequestId(), BitMaxSocketCashChannelOperation.Subscribe, "bbo:" + string.Join(",", symbols));
-            return await Subscribe(request, "bbo", false, internalHandler).ConfigureAwait(false);
+            return await SubscribeAsync(request, "bbo", false, internalHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -157,14 +159,14 @@ namespace BitMax.Net
         /// <returns></returns>
         public virtual async Task<CallResult<UpdateSubscription>> SubscribeToOrderBookUpdatesAsync(IEnumerable<string> symbols, Action<BitMaxSocketOrderBook> onData)
         {
-            var internalHandler = new Action<BitMaxSocketChannelResponse<BitMaxSocketOrderBook>>(data =>
+            var internalHandler = new Action<DataEvent<BitMaxSocketChannelResponse<BitMaxSocketOrderBook>>>(data =>
             {
-                data.Data.Symbol = data.Symbol;
-                onData(data.Data);
+                data.Data.Symbol = data.Data.Data.Symbol;
+                onData(data.Data.Data);
             });
 
             var request = new BitMaxSocketCashChannelRequest(NextRequestId(), BitMaxSocketCashChannelOperation.Subscribe, "depth:" + string.Join(",", symbols));
-            return await Subscribe(request, "depth", false, internalHandler).ConfigureAwait(false);
+            return await SubscribeAsync(request, "depth", false, internalHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -189,17 +191,17 @@ namespace BitMax.Net
         /// <returns></returns>
         public virtual async Task<CallResult<UpdateSubscription>> SubscribeToTradesAsync(IEnumerable<string> symbols, Action<BitMaxSocketTrade> onData)
         {
-            var internalHandler = new Action<BitMaxSocketChannelResponse<IEnumerable<BitMaxSocketTrade>>>(data =>
+            var internalHandler = new Action<DataEvent<BitMaxSocketChannelResponse<IEnumerable<BitMaxSocketTrade>>>>(data =>
             {
-                foreach (var d in data.Data)
+                foreach (var d in data.Data.Data)
                 {
-                    d.Symbol = data.Symbol;
+                    d.Symbol = data.Data.Symbol;
                     onData(d);
                 }
             });
 
             var request = new BitMaxSocketCashChannelRequest(NextRequestId(), BitMaxSocketCashChannelOperation.Subscribe, "trades:" + string.Join(",", symbols));
-            return await Subscribe(request, "trades", false, internalHandler).ConfigureAwait(false);
+            return await SubscribeAsync(request, "trades", false, internalHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -227,15 +229,15 @@ namespace BitMax.Net
         /// <returns></returns>
         public virtual async Task<CallResult<UpdateSubscription>> SubscribeToCandlesAsync(IEnumerable<string> symbols, BitMaxPeriod period, Action<BitMaxSocketCandle> onData)
         {
-            var internalHandler = new Action<BitMaxSocketBarChannelResponse<BitMaxSocketCandle>>(data =>
+            var internalHandler = new Action<DataEvent<BitMaxSocketBarChannelResponse<BitMaxSocketCandle>>>(data =>
             {
-                data.Data.Symbol = data.Symbol;
-                onData(data.Data);
+                data.Data.Data.Symbol = data.Data.Symbol;
+                onData(data.Data.Data);
             });
 
             var period_s = JsonConvert.SerializeObject(period, new PeriodConverter(false));
             var request = new BitMaxSocketCashChannelRequest(NextRequestId(), BitMaxSocketCashChannelOperation.Subscribe, "bar:" + period_s + ":" + string.Join(",", symbols));
-            return await Subscribe(request, "bar", false, internalHandler).ConfigureAwait(false);
+            return await SubscribeAsync(request, "bar", false, internalHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -301,31 +303,31 @@ namespace BitMax.Net
         /// <returns></returns>
         protected virtual async Task<CallResult<UpdateSubscription>> SubscribeToBalanceAndOrdersAsync(BitMaxAccountType cashAccountType, Action<BitMaxSocketSpotBalanceExt> onSpotBalanceData, Action<BitMaxSocketMarginBalanceExt> onMarginBalanceData, Action<BitMaxSocketCashOrderExt> onCashOrderData)
         {
-            var internalHandler = new Action<BitMaxSocketAccountResponse<object>>(data =>
+            var internalHandler = new Action<DataEvent<BitMaxSocketAccountResponse<object>>>(data =>
             {
-                var data_s = data.Data.ToString();
-                if (data.Method == "balance")
+                var data_s = data.Data.Data.ToString();
+                if (data.Data.Method == "balance")
                 {
-                    if (data.AccountType == BitMaxAccountType.Spot)
+                    if (data.Data.AccountType == BitMaxAccountType.Spot)
                     {
                         var balance = JsonConvert.DeserializeObject<BitMaxSocketSpotBalanceExt>(data_s);
-                        balance.AccountId = data.AccountId;
-                        balance.AccountType = data.AccountType;
+                        balance.AccountId = data.Data.AccountId;
+                        balance.AccountType = data.Data.AccountType;
                         if (onSpotBalanceData != null) onSpotBalanceData(balance);
                     }
-                    else if (data.AccountType == BitMaxAccountType.Margin)
+                    else if (data.Data.AccountType == BitMaxAccountType.Margin)
                     {
                         var balance = JsonConvert.DeserializeObject<BitMaxSocketMarginBalanceExt>(data_s);
-                        balance.AccountId = data.AccountId;
-                        balance.AccountType = data.AccountType;
+                        balance.AccountId = data.Data.AccountId;
+                        balance.AccountType = data.Data.AccountType;
                         if (onMarginBalanceData != null) onMarginBalanceData(balance);
                     }
                 }
-                else if (data.Method == "order")
+                else if (data.Data.Method == "order")
                 {
                     var order = JsonConvert.DeserializeObject<BitMaxSocketCashOrderExt>(data_s);
-                    order.AccountId = data.AccountId;
-                    order.AccountType = data.AccountType;
+                    order.AccountId = data.Data.AccountId;
+                    order.AccountType = data.Data.AccountType;
                     if (onCashOrderData != null) onCashOrderData(order);
                 }
 
@@ -334,34 +336,34 @@ namespace BitMax.Net
             });
 
             var request = new BitMaxSocketCashChannelRequest(NextRequestId(), BitMaxSocketCashChannelOperation.Subscribe, "order:" + (cashAccountType == BitMaxAccountType.Spot ? "cash" : "margin"));
-            return await Subscribe(request, "order", true, internalHandler).ConfigureAwait(false);
+            return await SubscribeAsync(request, "order", true, internalHandler).ConfigureAwait(false);
         }
 
         public virtual CallResult<UpdateSubscription> SubscribeToFuturesMarketData(string symbol, Action<BitMaxSocketFuturesMarketData> onData) => SubscribeToFuturesMarketDataAsync(new List<string> { symbol }, onData).Result;
         public virtual CallResult<UpdateSubscription> SubscribeToFuturesMarketData(IEnumerable<string> symbols, Action<BitMaxSocketFuturesMarketData> onData) => SubscribeToFuturesMarketDataAsync(symbols, onData).Result;
         public virtual async Task<CallResult<UpdateSubscription>> SubscribeToFuturesMarketDataAsync(IEnumerable<string> symbols, Action<BitMaxSocketFuturesMarketData> onData)
         {
-            var internalHandler = new Action<BitMaxSocketBarChannelResponse<BitMaxSocketFuturesMarketData>>(data =>
+            var internalHandler = new Action<DataEvent<BitMaxSocketBarChannelResponse<BitMaxSocketFuturesMarketData>>>(data =>
             {
-                data.Data.Symbol = data.Symbol;
-                onData(data.Data);
+                data.Data.Symbol = data.Data.Symbol;
+                onData(data.Data.Data);
             });
 
             var request = new BitMaxSocketCashChannelRequest(NextRequestId(), BitMaxSocketCashChannelOperation.Subscribe, "futures-market-data:" + string.Join(",", symbols));
-            return await Subscribe(request, "futures-market-data", false, internalHandler).ConfigureAwait(false);
+            return await SubscribeAsync(request, "futures-market-data", false, internalHandler).ConfigureAwait(false);
         }
 
         public virtual CallResult<UpdateSubscription> SubscribeToFuturesOrders(Action<BitMaxSocketFuturesOrderExt> onOrderData) => SubscribeToFuturesOrdersAsync(onOrderData).Result;
         public virtual async Task<CallResult<UpdateSubscription>> SubscribeToFuturesOrdersAsync(Action<BitMaxSocketFuturesOrderExt> onOrderData)
         {
-            var internalHandler = new Action<BitMaxSocketAccountResponse<object>>(data =>
+            var internalHandler = new Action<DataEvent<BitMaxSocketAccountResponse<object>>>(data =>
             {
-                var data_s = data.Data.ToString();
-                if (data.Method == "order")
+                var data_s = data.Data.Data.ToString();
+                if (data.Data.Method == "order")
                 {
                     var order = JsonConvert.DeserializeObject<BitMaxSocketFuturesOrderExt>(data_s);
-                    order.AccountId = data.AccountId;
-                    order.AccountType = data.AccountType;
+                    order.AccountId = data.Data.AccountId;
+                    order.AccountType = data.Data.AccountType;
                     if (onOrderData != null) onOrderData(order);
                 }
 
@@ -370,7 +372,7 @@ namespace BitMax.Net
             });
 
             var request = new BitMaxSocketCashChannelRequest(NextRequestId(), BitMaxSocketCashChannelOperation.Subscribe, "order:futures");
-            return await Subscribe(request, "order:futures", true, internalHandler).ConfigureAwait(false);
+            return await SubscribeAsync(request, "order:futures", true, internalHandler).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -397,16 +399,16 @@ namespace BitMax.Net
             var request = new BitMaxSocketAuthRequest(id);
             request.Sign(key, secret);
 
-            var result = await Query<BitMaxSocketAuthResponse>(request, false).ConfigureAwait(true);
+            var result = await QueryAsync<BitMaxSocketAuthResponse>(request, false).ConfigureAwait(true);
             Authendicated = result != null && result.Data != null && result.Data.Code == 0;
             return new CallResult<bool>(Authendicated, Authendicated ? null : new ServerError(result.Data != null ? result.Data.Error : ""));
         }
 
         #region Private Core Methods
-        protected virtual void PingHandler(SocketConnection connection, JToken data)
+        protected virtual void PingHandler(MessageEvent messageEvent)
         {
-            if (data["m"] != null && (string)data["m"] == "ping")
-                connection.Send(new BitMaxSocketPingRequest(NextRequestId()));
+            if (messageEvent.JsonData["m"] != null && (string)messageEvent.JsonData["m"] == "ping")
+                messageEvent.Connection.Send(new BitMaxSocketPingRequest(NextRequestId()));
         }
 
         protected long iterator = 0;
@@ -417,21 +419,22 @@ namespace BitMax.Net
         #endregion
 
         #region Override Methods
-        protected override SocketConnection GetWebsocket(string address, bool authenticated)
+        protected override SocketConnection GetSocketConnection(string address, bool authenticated)
         {
-            return this.BitMaxGetWebsocket(address, authenticated);
+            return this.BitMaxSocketConnection(address, authenticated);
         }
-        protected virtual SocketConnection BitMaxGetWebsocket(string address, bool authenticated)
+        protected virtual SocketConnection BitMaxSocketConnection(string address, bool authenticated)
         {
             address = address.TrimEnd('/');
             var socketResult = sockets.Where(s =>
                 s.Value.Socket.Url.TrimEnd('/') == address.TrimEnd('/') &&
                 (s.Value.Authenticated == authenticated || !authenticated) &&
-                s.Value.Connected).OrderBy(s => s.Value.HandlerCount).FirstOrDefault();
+                s.Value.Connected).OrderBy(s => s.Value.SubscriptionCount).FirstOrDefault();
             var result = socketResult.Equals(default(KeyValuePair<int, SocketConnection>)) ? null : socketResult.Value;
+
             if (result != null)
             {
-                if (result.HandlerCount < SocketCombineTarget || (sockets.Count >= MaxSocketConnections && sockets.All(s => s.Value.HandlerCount >= SocketCombineTarget)))
+                if (result.SubscriptionCount < SocketCombineTarget || (sockets.Count >= MaxSocketConnections && sockets.All(s => s.Value.SubscriptionCount >= SocketCombineTarget)))
                 {
                     // Use existing socket if it has less than target connections OR it has the least connections and we can't make new
                     return result;
@@ -440,14 +443,15 @@ namespace BitMax.Net
 
             // Create new socket
             var socket = CreateSocket(address);
-            var socketWrapper = new SocketConnection(this, socket);
+            var socketConnection = new SocketConnection(this, socket);
+            socketConnection.UnhandledMessage += HandleUnhandledMessage;
             foreach (var kvp in genericHandlers)
             {
-                var handler = SocketSubscription.CreateForIdentifier(kvp.Key, false, kvp.Value);
-                socketWrapper.AddHandler(handler);
+                var handler = SocketSubscription.CreateForIdentifier(NextId(), kvp.Key, false, kvp.Value);
+                socketConnection.AddSubscription(handler);
             }
 
-            return socketWrapper;
+            return socketConnection;
         }
 
         protected override bool HandleQueryResponse<T>(SocketConnection s, object request, JToken data, out CallResult<T> callResult)
@@ -465,7 +469,7 @@ namespace BitMax.Net
                     var desResult = Deserialize<T>(data, false);
                     if (!desResult)
                     {
-                        log.Write(LogVerbosity.Warning, $"Failed to deserialize data: {desResult.Error}. Data: {data}");
+                        log.Write(LogLevel.Warning, $"Failed to deserialize data: {desResult.Error}. Data: {data}");
                         callResult = new CallResult<T>(default, desResult.Error);
                         return true;
                     }
@@ -496,7 +500,7 @@ namespace BitMax.Net
                         var code = (int)message["code"];
                         var reason = ""; if (message["reason"] != null) reason = (string)message["reason"];
                         var info = ""; if (message["info"] != null) info = (string)message["info"];
-                        log.Write(LogVerbosity.Debug, "Subscription failed: " + info);
+                        log.Write(LogLevel.Debug, "Subscription failed: " + info);
                         callResult = new CallResult<object>(null, new ServerError(code, $"{reason}: {info}"));
                         return true;
                     }
@@ -510,7 +514,7 @@ namespace BitMax.Net
                 {
                     if (req.RequestId == (string)message["id"] && message["code"] != null && (int)message["code"] == 0)
                     {
-                        log.Write(LogVerbosity.Debug, "Subscription completed");
+                        log.Write(LogLevel.Debug, "Subscription completed");
                         callResult = new CallResult<object>(true, null);
                         return true;
                     }
@@ -591,7 +595,7 @@ namespace BitMax.Net
             return false;
         }
 
-        protected override async Task<CallResult<bool>> AuthenticateSocket(SocketConnection s)
+        protected override async Task<CallResult<bool>> AuthenticateSocketAsync(SocketConnection s)
         {
             return await this.BitMaxAuthenticateSocket(s);
         }
@@ -611,7 +615,7 @@ namespace BitMax.Net
             request.Sign(key, secret);
 
             var result = new CallResult<bool>(false, new ServerError("No response from server"));
-            await s.SendAndWait(request, ResponseTimeout, data =>
+            await s.SendAndWaitAsync(request, ResponseTimeout, data =>
             {
                 if (data["m"] == null || (string)data["m"] != "auth")
                     return false;
@@ -620,12 +624,12 @@ namespace BitMax.Net
                 {
                     var code = (int)data["code"];
                     var err = data["err"] != null ? (string)data["err"] : "";
-                    log.Write(LogVerbosity.Warning, "Authorization failed: " + err);
+                    log.Write(LogLevel.Warning, "Authorization failed: " + err);
                     result = new CallResult<bool>(false, new ServerError(code, err));
                     return true;
                 }
 
-                log.Write(LogVerbosity.Debug, "Authorization completed");
+                log.Write(LogLevel.Debug, "Authorization completed");
                 result = new CallResult<bool>(true, null);
                 Authendicated = true;
                 return true;
@@ -634,7 +638,7 @@ namespace BitMax.Net
             return result;
         }
 
-        protected override async Task<bool> Unsubscribe(SocketConnection connection, SocketSubscription s)
+        protected override async Task<bool> UnsubscribeAsync(SocketConnection connection, SocketSubscription s)
         {
             return await this.BitMaxUnsubscribe(connection, s);
         }
@@ -645,7 +649,7 @@ namespace BitMax.Net
 
             var id = NextRequestId().ToString();
             var request = new BitMaxSocketCashChannelRequest(id, BitMaxSocketCashChannelOperation.Unsubscribe, ((BitMaxSocketCashChannelRequest)s.Request).Channel);
-            await connection.SendAndWait(request, ResponseTimeout, data =>
+            await connection.SendAndWaitAsync(request, ResponseTimeout, data =>
             {
                 if (data.Type != JTokenType.Object)
                     return false;

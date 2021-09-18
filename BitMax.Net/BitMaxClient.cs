@@ -178,7 +178,7 @@ namespace BitMax.Net
         /// <returns></returns>
         public virtual async Task<WebCallResult<IEnumerable<BitMaxCashAsset>>> GetAssetsAsync(CancellationToken ct = default)
         {
-            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxCashAsset>>>(GetUrl(Endpoints_Cash_MarketData_Assets), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<IEnumerable<BitMaxCashAsset>>>(GetUrl(Endpoints_Cash_MarketData_Assets), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<IEnumerable<BitMaxCashAsset>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxCashAsset>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -198,7 +198,7 @@ namespace BitMax.Net
         /// <returns></returns>
         public virtual async Task<WebCallResult<IEnumerable<BitMaxProduct>>> GetProductsAsync(CancellationToken ct = default)
         {
-            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxProduct>>>(GetUrl(Endpoints_Cash_MarketData_Products), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<IEnumerable<BitMaxProduct>>>(GetUrl(Endpoints_Cash_MarketData_Products), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<IEnumerable<BitMaxProduct>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxProduct>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -293,7 +293,7 @@ namespace BitMax.Net
             var parameters = new Dictionary<string, object>();
             if (symbols != null && symbols.Count() > 0) parameters.Add("symbol", string.Join(",", symbols) + ","); // Comma Suffix Trick
 
-            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxTicker>>>(GetUrl(Endpoints_Cash_MarketData_Ticker), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<IEnumerable<BitMaxTicker>>>(GetUrl(Endpoints_Cash_MarketData_Ticker), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<IEnumerable<BitMaxTicker>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxTicker>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -313,7 +313,7 @@ namespace BitMax.Net
         /// <returns></returns>
         public virtual async Task<WebCallResult<IEnumerable<BitMaxBarPeriod>>> GetBarPeriodsAsync(CancellationToken ct = default)
         {
-            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxBarPeriod>>>(GetUrl(Endpoints_Cash_MarketData_BarInfo), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<IEnumerable<BitMaxBarPeriod>>>(GetUrl(Endpoints_Cash_MarketData_BarInfo), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<IEnumerable<BitMaxBarPeriod>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxBarPeriod>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -368,7 +368,7 @@ namespace BitMax.Net
             if (from.HasValue) parameters.AddOptionalParameter("from", from.Value.ToUnixTimeMilliseconds());
             if (to.HasValue) parameters.AddOptionalParameter("to", to.Value.ToUnixTimeMilliseconds());
 
-            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxCandleSerie>>>(GetUrl(Endpoints_Cash_MarketData_Bars), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<IEnumerable<BitMaxCandleSerie>>>(GetUrl(Endpoints_Cash_MarketData_Bars), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<IEnumerable<BitMaxCandleSerie>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxCandleSerie>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -395,7 +395,7 @@ namespace BitMax.Net
                 { "symbol", symbol },
             };
 
-            var result = await SendRequest<BitMaxApiResponse<BitMaxSerie<BitMaxOrderBook>>>(GetUrl(Endpoints_Cash_MarketData_Depth), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<BitMaxSerie<BitMaxOrderBook>>>(GetUrl(Endpoints_Cash_MarketData_Depth), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<BitMaxSerie<BitMaxOrderBook>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxSerie<BitMaxOrderBook>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -427,7 +427,7 @@ namespace BitMax.Net
                 { "n", limit },
             };
 
-            var result = await SendRequest<BitMaxApiResponse<BitMaxSerie<IEnumerable<BitMaxCashTrade>>>>(GetUrl(Endpoints_Cash_MarketData_Trades), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<BitMaxSerie<IEnumerable<BitMaxCashTrade>>>>(GetUrl(Endpoints_Cash_MarketData_Trades), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<BitMaxSerie<IEnumerable<BitMaxCashTrade>>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxSerie<IEnumerable<BitMaxCashTrade>>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -449,7 +449,7 @@ namespace BitMax.Net
         /// <returns></returns>
         public virtual async Task<WebCallResult<BitMaxAccountInfo>> GetAccountInfoAsync(bool setAccountGroup = false, CancellationToken ct = default)
         {
-            var result = await SendRequest<BitMaxApiResponse<BitMaxAccountInfo>>(GetUrl(Endpoints_Cash_Account_Info), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<BitMaxAccountInfo>>(GetUrl(Endpoints_Cash_Account_Info), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<BitMaxAccountInfo>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxAccountInfo>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -481,7 +481,7 @@ namespace BitMax.Net
             };
             parameters.AddOptionalParameter("asset", asset);
 
-            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxSpotBalance>>>(GetUrl(Endpoints_Cash_Balance_CashBalance), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<IEnumerable<BitMaxSpotBalance>>>(GetUrl(Endpoints_Cash_Balance_CashBalance), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<IEnumerable<BitMaxSpotBalance>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxSpotBalance>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -511,7 +511,7 @@ namespace BitMax.Net
             };
             parameters.AddOptionalParameter("asset", asset);
 
-            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxMarginBalance>>>(GetUrl(Endpoints_Cash_Balance_MarginBalance), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<IEnumerable<BitMaxMarginBalance>>>(GetUrl(Endpoints_Cash_Balance_MarginBalance), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<IEnumerable<BitMaxMarginBalance>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxMarginBalance>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -531,7 +531,7 @@ namespace BitMax.Net
         /// <returns></returns>
         public virtual async Task<WebCallResult<BitMaxMarginRisk>> GetMarginRiskAsync(CancellationToken ct = default)
         {
-            var result = await SendRequest<BitMaxApiResponse<BitMaxMarginRisk>>(GetUrl(Endpoints_Cash_Balance_MarginRisk), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<BitMaxMarginRisk>>(GetUrl(Endpoints_Cash_Balance_MarginRisk), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<BitMaxMarginRisk>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxMarginRisk>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -567,7 +567,7 @@ namespace BitMax.Net
                 { "toAccount", JsonConvert.SerializeObject(to, new WalletAccountConverter(false)) },
             };
 
-            var result = await SendRequest<BitMaxApiResponse<bool>>(GetUrl(Endpoints_Cash_Balance_Transfer), method: HttpMethod.Post, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<bool>>(GetUrl(Endpoints_Cash_Balance_Transfer), method: HttpMethod.Post, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<bool>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<bool>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -597,7 +597,7 @@ namespace BitMax.Net
             };
             parameters.AddOptionalParameter("blockchain", blockchain); // ERC20, TRC20, Omni
 
-            var result = await SendRequest<BitMaxApiResponse<BitMaxDepositAddress>>(GetUrl(Endpoints_Cash_Wallet_DepositAddresses), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<BitMaxDepositAddress>>(GetUrl(Endpoints_Cash_Wallet_DepositAddresses), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<BitMaxDepositAddress>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxDepositAddress>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -632,7 +632,7 @@ namespace BitMax.Net
             parameters.AddOptionalParameter("asset", asset);
             if (txType != null) parameters.AddOptionalParameter("txType", JsonConvert.SerializeObject(txType, new TransactionTypeConverter(false)));
 
-            var result = await SendRequest<BitMaxApiResponse<BitMaxPagedData<BitMaxTransaction>>>(GetUrl(Endpoints_Cash_Wallet_Transactions), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<BitMaxPagedData<BitMaxTransaction>>>(GetUrl(Endpoints_Cash_Wallet_Transactions), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<BitMaxPagedData<BitMaxTransaction>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxPagedData<BitMaxTransaction>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -811,7 +811,7 @@ namespace BitMax.Net
             }
 
             var url = Endpoints_Cash_Order_PlaceOrder.Replace("{account-category}", cashAccountType == BitMaxAccountType.Spot ? "cash" : "margin");
-            var result = await SendRequest<BitMaxApiResponse<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAccept>>>(GetUrl(url), method: HttpMethod.Post, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAccept>>>(GetUrl(url), method: HttpMethod.Post, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -916,7 +916,7 @@ namespace BitMax.Net
             };
 
             var url = Endpoints_Cash_Order_PlaceBatchOrders.Replace("{account-category}", cashAccountType == BitMaxAccountType.Spot ? "cash" : "margin");
-            var result = await SendRequest<BitMaxCashPlacedOrder<IEnumerable<BitMaxCashPlacedOrderInfoAck>>>(GetUrl(url), method: HttpMethod.Post, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxCashPlacedOrder<IEnumerable<BitMaxCashPlacedOrderInfoAck>>>(GetUrl(url), method: HttpMethod.Post, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<BitMaxCashPlacedOrder<IEnumerable<BitMaxCashPlacedOrderInfoAck>>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             // if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxCashPlacedOrder<IEnumerable<BitMaxCashPlacedOrderInfoAck>>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data.ErrorCode.Value, result.Data.ErrorMessage));
 
@@ -969,7 +969,7 @@ namespace BitMax.Net
             parameters.AddOptionalParameter("id", clientOrderId);
 
             var url = Endpoints_Cash_Order_CancelOrder.Replace("{account-category}", cashAccountType == BitMaxAccountType.Spot ? "cash" : "margin");
-            var result = await SendRequest<BitMaxApiResponse<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>>(GetUrl(url), method: HttpMethod.Delete, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>>(GetUrl(url), method: HttpMethod.Delete, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -1017,13 +1017,13 @@ namespace BitMax.Net
             {
                 var order = orders.ElementAt(i);
                 var suffix = $"(Order: {(i + 1)} of {orders.Count()})";
-                
-                    if (string.IsNullOrEmpty( order.Symbol) )
-                        throw new ArgumentException($"Symbol is required for orders {suffix}");
 
-                    if (string.IsNullOrEmpty( order.OrderId) )
-                        throw new ArgumentException($"OrderId is required for orders {suffix}");
-                
+                if (string.IsNullOrEmpty(order.Symbol))
+                    throw new ArgumentException($"Symbol is required for orders {suffix}");
+
+                if (string.IsNullOrEmpty(order.OrderId))
+                    throw new ArgumentException($"OrderId is required for orders {suffix}");
+
                 order.Time = time;
                 //order.ResponseInstruction = BitMaxCashOrderResponseInstruction.ACK;
             }
@@ -1034,7 +1034,7 @@ namespace BitMax.Net
             };
 
             var url = Endpoints_Cash_Order_CancelBatchOrders.Replace("{account-category}", cashAccountType == BitMaxAccountType.Spot ? "cash" : "margin");
-            var result = await SendRequest< BitMaxApiResponse< BitMaxCashPlacedOrder <IEnumerable<BitMaxCashPlacedOrderInfoAck>>>>(GetUrl(url), method: HttpMethod.Delete, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<BitMaxCashPlacedOrder<IEnumerable<BitMaxCashPlacedOrderInfoAck>>>>(GetUrl(url), method: HttpMethod.Delete, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<BitMaxCashPlacedOrder<IEnumerable<BitMaxCashPlacedOrderInfoAck>>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             // if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxCashPlacedOrder<IEnumerable<BitMaxCashPlacedOrderInfoAck>>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data.ErrorCode.Value, result.Data.ErrorMessage));
 
@@ -1076,7 +1076,7 @@ namespace BitMax.Net
                 parameters.AddOptionalParameter("symbol", symbol);
 
             var url = Endpoints_Cash_Order_CancelAllOrders.Replace("{account-category}", cashAccountType == BitMaxAccountType.Spot ? "cash" : "margin");
-            var result = await SendRequest<BitMaxApiResponse<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>>(GetUrl(url), method: HttpMethod.Delete, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>>(GetUrl(url), method: HttpMethod.Delete, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxCashPlacedOrder<BitMaxCashPlacedOrderInfoAck>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -1131,7 +1131,7 @@ namespace BitMax.Net
             };
 
             var url = Endpoints_Cash_Order_Query.Replace("{account-category}", cashAccountType == BitMaxAccountType.Spot ? "cash" : "margin");
-            var result = await SendRequest<BitMaxApiResponse<BitMaxCashPlacedOrderInfoAccept>>(GetUrl(url), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<BitMaxCashPlacedOrderInfoAccept>>(GetUrl(url), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<BitMaxCashPlacedOrderInfoAccept>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxCashPlacedOrderInfoAccept>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -1172,7 +1172,7 @@ namespace BitMax.Net
             parameters.AddOptionalParameter("symbol", symbol);
 
             var url = Endpoints_Cash_Order_OpenOrders.Replace("{account-category}", cashAccountType == BitMaxAccountType.Spot ? "cash" : "margin");
-            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>>(GetUrl(url), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>>(GetUrl(url), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -1225,7 +1225,7 @@ namespace BitMax.Net
             parameters.AddOptionalParameter("symbol", symbol);
 
             var url = Endpoints_Cash_Order_CurrentHistoryOrders.Replace("{account-category}", cashAccountType == BitMaxAccountType.Spot ? "cash" : "margin");
-            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>>(GetUrl(url), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>>(GetUrl(url), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -1322,7 +1322,7 @@ namespace BitMax.Net
             if (startTime.HasValue) parameters.AddOptionalParameter("endTime", endTime.Value.ToUnixTimeMilliseconds());
 
             var url = Endpoints_Cash_Order_HistoryOrders.Replace("{account-category}", cashAccountType == BitMaxAccountType.Spot ? "cash" : "margin");
-            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>>(GetUrl(url), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>>(GetUrl(url), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxCashPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -1347,7 +1347,7 @@ namespace BitMax.Net
         /// <returns></returns>
         public virtual async Task<WebCallResult<IEnumerable<BitMaxFuturesAsset>>> GetFuturesAssetsAsync(CancellationToken ct = default)
         {
-            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxFuturesAsset>>>(GetUrl(Endpoints_Futures_MarketData_CollateralAssets), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<IEnumerable<BitMaxFuturesAsset>>>(GetUrl(Endpoints_Futures_MarketData_CollateralAssets), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<IEnumerable<BitMaxFuturesAsset>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxFuturesAsset>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -1369,7 +1369,7 @@ namespace BitMax.Net
         /// <returns></returns>
         public virtual async Task<WebCallResult<IEnumerable<BitMaxFuturesContract>>> GetFuturesContractsAsync(CancellationToken ct = default)
         {
-            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxFuturesContract>>>(GetUrl(Endpoints_Futures_MarketData_Contracts), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<IEnumerable<BitMaxFuturesContract>>>(GetUrl(Endpoints_Futures_MarketData_Contracts), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<IEnumerable<BitMaxFuturesContract>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxFuturesContract>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -1389,7 +1389,7 @@ namespace BitMax.Net
         /// <returns></returns>
         public virtual async Task<WebCallResult<IEnumerable<BitMaxFuturesReferencePrice>>> GetFuturesReferencePricesAsync(CancellationToken ct = default)
         {
-            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxFuturesReferencePrice>>>(GetUrl(Endpoints_Futures_MarketData_ReferencePrices), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<IEnumerable<BitMaxFuturesReferencePrice>>>(GetUrl(Endpoints_Futures_MarketData_ReferencePrices), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<IEnumerable<BitMaxFuturesReferencePrice>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxFuturesReferencePrice>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -1468,7 +1468,7 @@ namespace BitMax.Net
             var parameters = new Dictionary<string, object>();
             if (symbols != null && symbols.Count() > 0) parameters.Add("symbol", string.Join(",", symbols) + ","); // Comma Suffix Trick
 
-            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxFuturesMarketData>>>(GetUrl(Endpoints_Futures_MarketData_MarketData), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<IEnumerable<BitMaxFuturesMarketData>>>(GetUrl(Endpoints_Futures_MarketData_MarketData), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<IEnumerable<BitMaxFuturesMarketData>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxFuturesMarketData>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -1497,7 +1497,7 @@ namespace BitMax.Net
                 {"pageSize", pageSize},
             };
 
-            var result = await SendRequest<BitMaxApiResponse<BitMaxPagedData<BitMaxFuturesFundingRate>>>(GetUrl(Endpoints_Futures_MarketData_FundingRates), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<BitMaxPagedData<BitMaxFuturesFundingRate>>>(GetUrl(Endpoints_Futures_MarketData_FundingRates), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: false, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<BitMaxPagedData<BitMaxFuturesFundingRate>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxPagedData<BitMaxFuturesFundingRate>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -1517,7 +1517,7 @@ namespace BitMax.Net
         /// <returns></returns>
         public virtual async Task<WebCallResult<IEnumerable<BitMaxFuturesBalance>>> GetFuturesBalancesAsync(CancellationToken ct = default)
         {
-            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxFuturesBalance>>>(GetUrl(Endpoints_Futures_Balance_CollateralBalance), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<IEnumerable<BitMaxFuturesBalance>>>(GetUrl(Endpoints_Futures_Balance_CollateralBalance), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<IEnumerable<BitMaxFuturesBalance>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxFuturesBalance>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -1537,7 +1537,7 @@ namespace BitMax.Net
         /// <returns></returns>
         public virtual async Task<WebCallResult<IEnumerable<BitMaxFuturesPosition>>> GetFuturesPositionsAsync(CancellationToken ct = default)
         {
-            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxFuturesPosition>>>(GetUrl(Endpoints_Futures_Balance_ContractPosition), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<IEnumerable<BitMaxFuturesPosition>>>(GetUrl(Endpoints_Futures_Balance_ContractPosition), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<IEnumerable<BitMaxFuturesPosition>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxFuturesPosition>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -1557,7 +1557,7 @@ namespace BitMax.Net
         /// <returns></returns>
         public virtual async Task<WebCallResult<BitMaxFuturesRisk>> GetFuturesRiskAsync(CancellationToken ct = default)
         {
-            var result = await SendRequest<BitMaxApiResponse<BitMaxFuturesRisk>>(GetUrl(Endpoints_Futures_Balance_AccountRisk), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<BitMaxFuturesRisk>>(GetUrl(Endpoints_Futures_Balance_AccountRisk), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<BitMaxFuturesRisk>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxFuturesRisk>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -1635,7 +1635,7 @@ namespace BitMax.Net
             };
             if (symbols != null && symbols.Count() > 0) parameters.Add("symbol", string.Join(",", symbols) + ","); // Comma Suffix Trick
 
-            var result = await SendRequest<BitMaxApiResponse<BitMaxPagedData<BitMaxFuturesFundingPayment>>>(GetUrl(Endpoints_Futures_Balance_FundingPaymentHistory), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<BitMaxPagedData<BitMaxFuturesFundingPayment>>>(GetUrl(Endpoints_Futures_Balance_FundingPaymentHistory), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<BitMaxPagedData<BitMaxFuturesFundingPayment>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxPagedData<BitMaxFuturesFundingPayment>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -1665,7 +1665,7 @@ namespace BitMax.Net
                 {"asset", asset},
                 {"amount", amount.ToString(ci)},
             };
-            var result = await SendRequest<BitMaxApiResponse<bool>>(GetUrl(Endpoints_Futures_Wallet_TransferFromCashToFuturesAccount), method: HttpMethod.Post, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<bool>>(GetUrl(Endpoints_Futures_Wallet_TransferFromCashToFuturesAccount), method: HttpMethod.Post, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<bool>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<bool>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -1695,7 +1695,7 @@ namespace BitMax.Net
                 {"asset", asset},
                 {"amount", amount.ToString(ci)},
             };
-            var result = await SendRequest<BitMaxApiResponse<bool>>(GetUrl(Endpoints_Futures_Wallet_TransferFromFuturesToCashAccount), method: HttpMethod.Post, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<bool>>(GetUrl(Endpoints_Futures_Wallet_TransferFromFuturesToCashAccount), method: HttpMethod.Post, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<bool>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<bool>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -1777,7 +1777,7 @@ namespace BitMax.Net
             */
 
             var url = Endpoints_Futures_Order_PlaceOrder;
-            var result = await SendRequest<BitMaxApiResponse<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAccept>>>(GetUrl(url), method: HttpMethod.Post, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAccept>>>(GetUrl(url), method: HttpMethod.Post, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -1811,7 +1811,7 @@ namespace BitMax.Net
             parameters.AddOptionalParameter("id", clientOrderId);
 
             var url = Endpoints_Futures_Order_CancelOrder;
-            var result = await SendRequest<BitMaxApiResponse<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAck>>>(GetUrl(url), method: HttpMethod.Delete, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAck>>>(GetUrl(url), method: HttpMethod.Delete, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAck>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAck>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -1838,7 +1838,7 @@ namespace BitMax.Net
                 parameters.AddOptionalParameter("symbol", symbol);
 
             var url = Endpoints_Futures_Order_CancelAllOrders;
-            var result = await SendRequest<BitMaxApiResponse<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAck>>>(GetUrl(url), method: HttpMethod.Delete, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAck>>>(GetUrl(url), method: HttpMethod.Delete, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAck>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxFuturesPlacedOrder<BitMaxFuturesPlacedOrderInfoAck>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -1928,7 +1928,7 @@ namespace BitMax.Net
             };
 
             var url = Endpoints_Futures_Order_PlaceBatchOrders;
-            var result = await SendRequest<BitMaxFuturesPlacedOrder<IEnumerable<BitMaxFuturesPlacedOrderInfoAck>>>(GetUrl(url), method: HttpMethod.Post, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxFuturesPlacedOrder<IEnumerable<BitMaxFuturesPlacedOrderInfoAck>>>(GetUrl(url), method: HttpMethod.Post, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<BitMaxFuturesPlacedOrder<IEnumerable<BitMaxFuturesPlacedOrderInfoAck>>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             // if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxFuturesPlacedOrder<IEnumerable<BitMaxFuturesPlacedOrderInfoAck>>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data.ErrorCode.Value, result.Data.ErrorMessage));
 
@@ -1978,7 +1978,7 @@ namespace BitMax.Net
             };
 
             var url = Endpoints_Futures_Order_CancelBatchOrders;
-            var result = await SendRequest<BitMaxApiResponse<BitMaxFuturesPlacedOrder<IEnumerable<BitMaxFuturesPlacedOrderInfoAck>>>>(GetUrl(url), method: HttpMethod.Delete, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<BitMaxFuturesPlacedOrder<IEnumerable<BitMaxFuturesPlacedOrderInfoAck>>>>(GetUrl(url), method: HttpMethod.Delete, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<BitMaxFuturesPlacedOrder<IEnumerable<BitMaxFuturesPlacedOrderInfoAck>>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             // if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxFuturesPlacedOrder<IEnumerable<BitMaxFuturesPlacedOrderInfoAck>>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data.ErrorCode.Value, result.Data.ErrorMessage));
 
@@ -2008,7 +2008,7 @@ namespace BitMax.Net
             };
 
             var url = Endpoints_Futures_Order_Query;
-            var result = await SendRequest<BitMaxApiResponse<BitMaxFuturesPlacedOrderInfoAccept>>(GetUrl(url), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<BitMaxFuturesPlacedOrderInfoAccept>>(GetUrl(url), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<BitMaxFuturesPlacedOrderInfoAccept>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<BitMaxFuturesPlacedOrderInfoAccept>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -2034,7 +2034,7 @@ namespace BitMax.Net
             parameters.AddOptionalParameter("symbol", symbol);
 
             var url = Endpoints_Futures_Order_OpenOrders;
-            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxFuturesPlacedOrderInfoAccept>>>(GetUrl(url), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<IEnumerable<BitMaxFuturesPlacedOrderInfoAccept>>>(GetUrl(url), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<IEnumerable<BitMaxFuturesPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxFuturesPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -2068,7 +2068,7 @@ namespace BitMax.Net
             parameters.AddOptionalParameter("symbol", symbol);
 
             var url = Endpoints_Futures_Order_CurrentHistoryOrders;
-            var result = await SendRequest<BitMaxApiResponse<IEnumerable<BitMaxFuturesPlacedOrderInfoAccept>>>(GetUrl(url), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
+            var result = await SendRequestAsync<BitMaxApiResponse<IEnumerable<BitMaxFuturesPlacedOrderInfoAccept>>>(GetUrl(url), method: HttpMethod.Get, cancellationToken: ct, checkResult: false, signed: true, parameters: parameters).ConfigureAwait(false);
             if (!result.Success) return WebCallResult<IEnumerable<BitMaxFuturesPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, result.Error);
             if (result.Data.ErrorCode > 0) return WebCallResult<IEnumerable<BitMaxFuturesPlacedOrderInfoAccept>>.CreateErrorResult(result.ResponseStatusCode, result.ResponseHeaders, new BitMaxError(result.Data));
 
@@ -2094,20 +2094,20 @@ namespace BitMax.Net
             return new ServerError((int)error["code"], (string)error["message"] + reason + info);
         }
 
-        protected override IRequest ConstructRequest(Uri uri, HttpMethod method, Dictionary<string, object> parameters, bool signed, PostParameters postPosition, ArrayParametersSerialization arraySerialization, int requestId)
+        protected override IRequest ConstructRequest(Uri uri, HttpMethod method, Dictionary<string, object> parameters, bool signed, HttpMethodParameterPosition parameterPosition, ArrayParametersSerialization arraySerialization, int requestId, Dictionary<string, string> additionalHeaders)
         {
-            return this.BitMaxConstructRequest(uri, method, parameters, signed, postPosition, arraySerialization, requestId);
+            return this.BitMaxConstructRequest(uri, method, parameters, signed, parameterPosition, arraySerialization, requestId, additionalHeaders);
         }
-        protected virtual IRequest BitMaxConstructRequest(Uri uri, HttpMethod method, Dictionary<string, object> parameters, bool signed, PostParameters postPosition, ArrayParametersSerialization arraySerialization, int requestId)
+        protected virtual IRequest BitMaxConstructRequest(Uri uri, HttpMethod method, Dictionary<string, object> parameters, bool signed, HttpMethodParameterPosition parameterPosition, ArrayParametersSerialization arraySerialization, int requestId, Dictionary<string, string> additionalHeaders)
         {
             if (parameters == null)
                 parameters = new Dictionary<string, object>();
 
             var uriString = uri.ToString();
             if (authProvider != null)
-                parameters = authProvider.AddAuthenticationToParameters(uriString, method, parameters, signed, postPosition, arraySerialization);
+                parameters = authProvider.AddAuthenticationToParameters(uriString, method, parameters, signed, parameterPosition, arraySerialization);
 
-            if ((method == HttpMethod.Get || postPosition == PostParameters.InUri) && parameters?.Any() == true)
+            if ((method == HttpMethod.Get || parameterPosition == HttpMethodParameterPosition.InUri) && parameters?.Any() == true)
                 uriString += "?" + parameters.CreateParamString(true, arraySerialization);
 
             var contentType = requestBodyFormat == RequestBodyFormat.Json ? Constants.JsonContentHeader : Constants.FormContentHeader;
@@ -2124,7 +2124,7 @@ namespace BitMax.Net
             foreach (var header in headers)
                 request.AddHeader(header.Key, header.Value);
 
-            if ((method == HttpMethod.Post || method == HttpMethod.Put || method == HttpMethod.Delete) && postPosition != PostParameters.InUri)
+            if (parameterPosition == HttpMethodParameterPosition.InBody)
             {
                 if (parameters?.Any() == true)
                     WriteParamBody(request, parameters, contentType);

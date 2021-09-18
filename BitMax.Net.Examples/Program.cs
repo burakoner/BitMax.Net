@@ -2,6 +2,7 @@
 using BitMax.Net.Enums;
 using BitMax.Net.RestObjects;
 using CryptoExchange.Net.Logging;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -208,7 +209,7 @@ namespace BitMax.Net.Examples
             });
 
             // Unsubscribe
-            _ = ws.Unsubscribe(sub05.Data);
+            _ = ws.UnsubscribeAsync(sub05.Data);
 
             ws.SubscribeToFuturesMarketData("BTC-PERP", (data) =>
             {
